@@ -4,6 +4,8 @@ This template repository is the starter project for Web Services project. Writte
 
 ## Deliverables
 
+[Click here to see project proposal presentation (Deliverable 0)](https://docs.google.com/presentation/d/1AXguj0c1HO43YrFlYmc2UgMp56H3QxALVl7zmdekDUs/edit?usp=sharing)
+
 ### Deliverable 0
 
 The holistic learning of the course will be evaluated through the term project in which a team of 2-3 students should design and implement an API Service website from scratch.
