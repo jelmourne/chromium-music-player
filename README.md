@@ -1,4 +1,4 @@
-# Web Services - Project
+# Spotify Web API Chrome Extension
 
 This template repository is the starter project for Web Services project. Written in HTML/CSS/JavaScript/React.js/Node.js/Express.js.
 
