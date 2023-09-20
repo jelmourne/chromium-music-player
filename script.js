@@ -112,9 +112,15 @@ async function getSearch(Query) {
   return await response.json();
 }
 
-document
-  .getElementById("login-button")
-  .addEventListener("click", authorization);
+document.getElementById("profile").addEventListener("click", () => {
+  const dropdown = document.getElementById("account-dropdown");
+  return localStorage.getItem("access_token") == null ? authorization() : ds;
+});
+
+document.getElementById("logout-button").addEventListener("click", () => {
+  localStorage.removeItem("access_token");
+  location.reload();
+});
 
 document.getElementById("profile-name").innerHTML =
   "Hi, " + profile.display_name;
