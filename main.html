@@ -1,12 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
     <script type="module" src="script.js"></script>
-</head>
-<body>
+  </head>
+  <body>
     <button id="login-button">Spotify</button>
-</body>
+    <script src="https://sdk.scdn.co/spotify-player.js"></script>
+
+    <script>
+      window.onSpotifyWebPlaybackSDKReady = () => {
+        const accessToken = localStorage.getItem("access_token");
+        const player = new Spotify.player({
+          name: "Chromium Spotify Player",
+          getOAuthToken: (cb) => {
+            cb(accessToken);
+          },
+          volume: 1,
+        });
+
+        player.addListener("ready", ({ deviceId }) => {
+          console.log("Ready with Device ID", deviceId);
+        });
+
+        player.connect();
+      };
+    </script>
+  </body>
 </html>
