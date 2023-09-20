@@ -1,3 +1,5 @@
+const profile = await getProfile();
+
 function generateRandomString(length) {
   let text = "";
   let possible =
@@ -114,4 +116,8 @@ document
   .getElementById("login-button")
   .addEventListener("click", authorization);
 
-console.log(await getSearch("drake"));
+document.getElementById("profile-name").innerHTML =
+  "Hi, " + profile.display_name;
+
+document.getElementById("profile-follower").innerHTML =
+  profile.followers.total + " Followers";
