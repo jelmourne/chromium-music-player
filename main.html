@@ -5,7 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
     <script type="module" src="script.js"></script>
+<<<<<<< HEAD
 
+=======
+>>>>>>> 02af8d180e6c9086ff549dbb9d268b5a044d8989
     <link rel="stylesheet" href="style.css" />
     <link
       rel="stylesheet"
@@ -15,9 +18,28 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/all.min.css"
     />
+    <script
+      src="https://kit.fontawesome.com/e2de3a3f6a.js"
+      crossorigin="anonymous"
+    ></script>
+    <script src="https://cdn.tailwindcss.com"></script>
   </head>
   <body>
-    <button id="login-button">Spotify</button>
+    <div class="flex flex-row bg-slate-700 justify-between">
+      <div class="mx-5">
+        <div
+          class="rounded-3xl bg-white px-3 border-[1px] border-gray-500 border-solid"
+        >
+          <i class="fa-solid fa-magnifying-glass pe-2"></i>
+          <input class="outline-none w-24" placeholder="Search" />
+        </div>
+      </div>
+      <div class="mx-5">
+        <a><i class="fa-solid fa-moon mx-3"></i></a>
+        <a><i class="fa-solid fa-music mx-3"></i></a>
+        <a id="login-button"><i class="fa-solid fa-user mx-3"></i></a>
+      </div>
+    </div>
 
     <div class="player">
       <div class="wrapper">
