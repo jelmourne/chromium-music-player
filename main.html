@@ -10,10 +10,11 @@
     <button id="login-button">Spotify</button>
     <script src="https://sdk.scdn.co/spotify-player.js"></script>
 
+    <!--
     <script>
       window.onSpotifyWebPlaybackSDKReady = () => {
         const accessToken = localStorage.getItem("access_token");
-        const player = new Spotify.player({
+        const player = new Spotify.Player({
           name: "Chromium Spotify Player",
           getOAuthToken: (cb) => {
             cb(accessToken);
@@ -28,5 +29,6 @@
         player.connect();
       };
     </script>
+    -->
   </body>
 </html>
