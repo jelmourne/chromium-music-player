@@ -23,14 +23,19 @@
   <body>
     <button id="login-button">Spotify</button>
 
-    <div class="flex flex-row bg-slate-700">
-      <div class="flex flex-col">
-        <input class="border-none rounded-3xl" placeholder="Search" />
+    <div class="flex flex-row bg-slate-700 justify-between">
+      <div class="mx-5">
+        <div
+          class="rounded-3xl bg-white px-3 border-[1px] border-gray-500 border-solid"
+        >
+          <i class="fa-solid fa-magnifying-glass pe-2"></i>
+          <input class="outline-none w-24" placeholder="Search" />
+        </div>
       </div>
-      <div class="flex flex-col">
-        <a><i class="fa-solid fa-moon"></i></a>
-        <a><i class="fa-solid fa-music"></i></a>
-        <a><i class="fa-solid fa-user"></i></a>
+      <div class="mx-5">
+        <a><i class="fa-solid fa-moon mx-3"></i></a>
+        <a><i class="fa-solid fa-music mx-3"></i></a>
+        <a><i class="fa-solid fa-user mx-3"></i></a>
       </div>
     </div>
 
