@@ -103,7 +103,7 @@ async function getSearch(Query) {
   });
 
   const response = await fetch(`https://api.spotify.com/v1/search?${args}`, {
-    headers: {
+    header: {
       Authorization: "Bearer " + accessToken,
     },
   });
