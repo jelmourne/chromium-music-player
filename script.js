@@ -31,7 +31,7 @@ function authorization() {
   generateCodeVerify(codeVerify).then((codeChallenge) => {
     let state = generateRandomString(16);
     let scope =
-      "streaming user-modify-playback-state user-read-currently-playing playlist-read-private user-read-email";
+      "streaming user-modify-playback-state user-read-currently-playing playlist-read-private user-read-email user-read-private";
 
     localStorage.setItem("code_verifier", codeVerify);
 
@@ -90,9 +90,28 @@ async function getProfile() {
     },
   });
 
-  const data = await response.json();
-  return data;
+  return await response.json();
 }
 
-const data = await getProfile();
-console.log(data["display_name"]);
+async function getSearch(Query) {
+  let accessToken = localStorage.getItem("access_token");
+
+  let args = new URLSearchParams({
+    q: Query,
+    type: "track",
+    limit: 5,
+  });
+
+  const response = await fetch(`https://api.spotify.com/v1/search?${args}`, {
+    headers: {
+      Authorization: "Bearer " + accessToken,
+    },
+  });
+  return await response.json();
+}
+
+document
+  .getElementById("login-button")
+  .addEventListener("click", authorization);
+
+console.log(await getSearch("drake"));
