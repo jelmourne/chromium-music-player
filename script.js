@@ -1,3 +1,5 @@
+const profile = await getProfile();
+
 function generateRandomString(length) {
   let text = "";
   let possible =
@@ -109,7 +111,6 @@ async function getSearch(Query) {
   });
   return await response.json();
 }
-
 // Calls ticketmaster API to fetch events and returns the events as an array
 async function getEvents() {
   const userProfile = await getProfile();
@@ -132,3 +133,18 @@ document
 console.log(await getEvents())
 console.log(await getSearch("drake"));
 
+document.getElementById("profile").addEventListener("click", () => {
+  const dropdown = document.getElementById("account-dropdown");
+  return localStorage.getItem("access_token") == null ? authorization() : ds;
+});
+
+document.getElementById("logout-button").addEventListener("click", () => {
+  localStorage.removeItem("access_token");
+  location.reload();
+});
+
+document.getElementById("profile-name").innerHTML =
+  "Hi, " + profile.display_name;
+
+document.getElementById("profile-follower").innerHTML =
+  profile.followers.total + " Followers";
