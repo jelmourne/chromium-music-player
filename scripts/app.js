@@ -26,3 +26,5 @@ localStorage.getItem("access_token") == null
   
 document.getElementById("profile-followers").innerHTML =
   profile.followers.total + " Followers";
+
+console.log(await getEvents(profile.country));
