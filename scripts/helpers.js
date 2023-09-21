@@ -64,4 +64,4 @@ async function getEvents() {
   return await events;
 }
 
-export { getProfile, getSearch, getEvents };
+export { getProfile, getSearch, getEvents, getUserPlaylist };

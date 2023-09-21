@@ -1,7 +1,13 @@
 import { authorization } from "./authentication.js";
-import { getProfile, getSearch, getEvents } from "./helpers.js";
+import {
+  getProfile,
+  getSearch,
+  getEvents,
+  getUserPlaylist,
+} from "./helpers.js";
 
 const profile = await getProfile();
+const playlist = await getUserPlaylist();
 
 // DOM Manipulation Section
 document
@@ -33,7 +39,6 @@ const searchResults = document.getElementById("search-result");
 search.addEventListener("input", () => {
   getSearch(search.value).then((response) => {
     response.tracks.items.forEach((element) => {
-      console.log(element);
       searchResults.innerHTML = `<div
       class="flex w-auto bg-white p-1 hover:bg-green-500 hover:text-white transition-all my-2"
     >
@@ -47,7 +52,7 @@ search.addEventListener("input", () => {
         <h1 class="text-lg">${element.name}</h1>
         <div class="flex flex-row">
           <p class="text-lg me-2">${
-            element.explicit == true ? "&#127348" : " "
+            element.explicit == true ? "&#127348" : ""
           }</p>
           <p>${element.artists[0].name}</p>
         </div>
@@ -55,4 +60,31 @@ search.addEventListener("input", () => {
     </div>`;
     });
   });
+});
+
+const playlistResult = document.getElementById("playlist-results");
+
+playlist.items.forEach((element) => {
+  console.log(playlist);
+  playlistResult.innerHTML += `<li
+        class="flex w-auto bg-white p-1 hover:bg-green-500 hover:text-white transition-all my-2"
+      >
+        <div class="flex flex-col">
+          <img
+            src="${element.images[0].url}"
+            class="h-14 aspect-square"
+          />
+        </div>
+        <div class="flex flex-col mx-3">
+          <h1 class="text-lg">${element.name}</h1>
+          <div class="flex flex-row">
+            <p>Tracks: ${element.tracks.total}</p>
+            <p>&nbsp ${
+              element.owner.display_name == "undefined"
+                ? ""
+                : element.owner.display_name
+            }</p>
+          </div>
+        </div>
+      </li>`;
 });
