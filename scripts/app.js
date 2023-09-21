@@ -23,6 +23,18 @@ const userProfileName = document.getElementById("profile-name");
 localStorage.getItem("access_token") == null
   ? (userProfileName.innerHTML = " ")
   : (userProfileName.innerHTML = "Hi, " + profile.display_name);
-  
+
 document.getElementById("profile-followers").innerHTML =
   profile.followers.total + " Followers";
+
+const search = document.getElementById("song-search");
+const searchResults = document.getElementById("search-result");
+
+search.addEventListener("input", () => {
+  getSearch(search.value).then((response) => {
+    response.tracks.items.forEach((element) => {
+      console.log(element);
+      searchResults.innerHTML = element.name;
+    });
+  });
+});
