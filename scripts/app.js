@@ -47,7 +47,7 @@ search.addEventListener("input", () => {
         <h1 class="text-lg">${element.name}</h1>
         <div class="flex flex-row">
           <p class="text-lg me-2">${
-            element.explicit === true ? "&#127348" : ""
+            element.explicit == true ? "&#127348" : " "
           }</p>
           <p>${element.artists[0].name}</p>
         </div>
