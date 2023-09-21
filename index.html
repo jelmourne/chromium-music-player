@@ -17,35 +17,17 @@
       <!-- Search for song -->
       <div class="mx-5">
         <div
-          class="rounded-3xl bg-white px-3 border-[1px] border-gray-500 border-solid"
+          class="rounded-3xl bg-white px-3 border-[1px] border-gray-500 border-solid w-40"
         >
           <i class="fa-solid fa-magnifying-glass pe-2"></i>
           <input
             type="search"
-            class="outline-none w-32"
+            class="outline-none w-9/12"
             placeholder="Search"
             id="song-search"
           />
         </div>
-        <div class="rounded-md border-2" id="search-result">
-          <div
-            class="flex w-auto bg-white p-1 hover:bg-green-500 hover:text-white transition-all my-2"
-          >
-            <div class="flex flex-col">
-              <img
-                src="https://www.theglobeandmail.com/resizer/mapm0FFyArteWGSSESdYmBoS8MA=/1200x0/filters:quality(80):format(webp)/arc-anglerfish-tgam-prod-tgam.s3.amazonaws.com/public/3YV2PTJAVFGCVJK5IC6RJYY6EA"
-                class="w-14 aspect-square"
-              />
-            </div>
-            <div class="flex flex-col mx-3">
-              <h1 class="text-lg">Were Going Home</h1>
-              <div class="flex flex-row">
-                <p class="text-xl me-2">&#127348;</p>
-                <h2 class="">Drake</h2>
-              </div>
-            </div>
-          </div>
-        </div>
+        <div class="rounded-md border-2" id="search-result"></div>
       </div>
       <!---->
       <div class="mx-5">
@@ -67,7 +49,6 @@
             class="h-48 py-2 text-sm text-gray-700 text-center overflow-y-auto"
             aria-labelledby="playlist"
           >
-            <li class="block px-4 py-2" id="profile-name"></li>
             <li class="block px-4 py-2" id="profile-followers">0 Followers</li>
             <li>
               <a
@@ -119,7 +100,6 @@
             <li>
               <a
                 id="logout-button"
-                href="#"
                 class="block px-4 py-2 text-red-600 hover:bg-green-500 dark:hover:text-white transition-all"
                 >Sign out</a
               >

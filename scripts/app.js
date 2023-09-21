@@ -34,7 +34,25 @@ search.addEventListener("input", () => {
   getSearch(search.value).then((response) => {
     response.tracks.items.forEach((element) => {
       console.log(element);
-      searchResults.innerHTML = element.name;
+      searchResults.innerHTML = `<div
+      class="flex w-auto bg-white p-1 hover:bg-green-500 hover:text-white transition-all my-2"
+    >
+      <div class="flex flex-col">
+        <img
+          src="${element.album.images[0].url}"
+          class="h-14 aspect-square"
+        />
+      </div>
+      <div class="flex flex-col mx-3">
+        <h1 class="text-lg">${element.name}</h1>
+        <div class="flex flex-row">
+          <p class="text-lg me-2">${
+            element.explicit === true ? "&#127348" : ""
+          }</p>
+          <p>${element.artists[0].name}</p>
+        </div>
+      </div>
+    </div>`;
     });
   });
 });
