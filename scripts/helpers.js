@@ -1,3 +1,14 @@
+// Delay timer used for search
+function debounce(func, duration) {
+  let timer;
+  return (...args) => {
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+      func.apply(this, args);
+    }, duration);
+  };
+}
+
 // Retrieves profile object from Spotify API
 async function getProfile() {
   let accessToken = localStorage.getItem("access_token");
@@ -29,10 +40,25 @@ async function getSearch(Query) {
   return await response.json();
 }
 
+// Get users list of playlists
+async function getUserPlaylist() {
+  let accessToken = localStorage.getItem("access_token");
+
+  const response = await fetch(
+    `https://api.spotify.com/v1/users/${await getProfile().id}/playlists`,
+    {
+      headers: {
+        Authorization: "Bearer " + accessToken,
+      },
+    }
+  );
+
+  return await response.json();
+}
+
 // Function that calls ticketmaster API to fetch events in the users country. The function will loop
 // through the fetched data and store the name, date, time, url, and image of the event. Duplicate tours
 // in different cities will be ignored, only 1 tour date per tour will be displayed.
-
 async function getEvents(userCountry) {
   const rootURL = "https://app.ticketmaster.com/discovery/v2/";
   const apiKey = "MXLBwKzlHC8GwQe6qv9gdnCw2oWr7N3V";
@@ -65,4 +91,4 @@ async function getEvents(userCountry) {
   return filteredEvents;
 }
 
-export { getProfile, getSearch, getEvents };
+export { getProfile, getSearch, getEvents, getUserPlaylist, debounce };
