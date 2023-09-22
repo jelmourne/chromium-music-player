@@ -7,6 +7,7 @@ import {
   debounce,
 } from "./helpers.js";
 
+/* 
 // Check if user is logged in and change profile icon
 const profileSection = document.getElementById("profile");
 
@@ -25,6 +26,8 @@ id="profile-button"
 >
 <i class="fa-solid fa-user mx-3"></i>
 </button>`);
+
+*/
 
 // Declaring consts
 const profile = await getProfile();

@@ -58,7 +58,15 @@
         <!---->
 
         <!-- Toggle for account page -->
-        <div class="inline-flex" id="profile"></div>
+        <div class="inline-flex" id="profile">
+          <button
+            data-dropdown-toggle="account-dropdown"
+            type="button"
+            id="profile-button"
+          >
+            <i class="fa-solid fa-user mx-3"></i>
+          </button>
+        </div>
 
         <div
           id="account-dropdown"
@@ -68,6 +76,9 @@
             class="py-2 text-sm text-gray-700 text-center"
             aria-labelledby="profile-button"
           >
+            <li class="block px-4 py-2">
+              <button id="login-button">Login</button>
+            </li>
             <li class="block px-4 py-2" id="profile-name"></li>
             <li class="block px-4 py-2" id="profile-followers">0 Followers</li>
             <li>
