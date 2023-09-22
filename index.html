@@ -27,7 +27,11 @@
             id="song-search"
           />
         </div>
-        <div class="rounded-md border-2" id="search-result"></div>
+        <div
+          class="z-10 bg-white divide-y divide-gray-100 rounded-lg shadow-xl [&>li]:py-2"
+        >
+          <ul id="search-result" class="text-sm text-gray-700"></ul>
+        </div>
       </div>
       <!---->
       <div class="mx-5">
@@ -54,24 +58,16 @@
         <!---->
 
         <!-- Toggle for account page -->
-        <button
-          id="profile"
-          data-dropdown-toggle="account-dropdown"
-          type="button"
-        >
-          <i class="fa-solid fa-user mx-3"></i>
-        </button>
+        <div class="inline-flex" id="profile"></div>
+
         <div
           id="account-dropdown"
           class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg w-44 shadow-xl"
         >
           <ul
             class="py-2 text-sm text-gray-700 text-center"
-            aria-labelledby="profile"
+            aria-labelledby="profile-button"
           >
-            <li class="block px-4 py-2">
-              <button id="login-button" type="button">Login</button>
-            </li>
             <li class="block px-4 py-2" id="profile-name"></li>
             <li class="block px-4 py-2" id="profile-followers">0 Followers</li>
             <li>
@@ -84,7 +80,7 @@
             <li>
               <a
                 id="logout-button"
-                class="block px-4 py-2 text-red-600 hover:bg-green-500 dark:hover:text-white transition-all"
+                class="block px-4 py-2 text-red-600 hover:bg-green-500 dark:hover:text-white transition-all cursor-pointer"
                 >Sign out</a
               >
             </li>
@@ -174,6 +170,5 @@
       };
     </script>
     -->
-    <script src="https://unpkg.com/flowbite@1.5.1/dist/flowbite.js"></script>
   </body>
 </html>

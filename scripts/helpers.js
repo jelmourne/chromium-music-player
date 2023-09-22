@@ -1,3 +1,14 @@
+// Delay timer used for search
+function debounce(func, duration) {
+  let timer;
+  return (...args) => {
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+      func.apply(this, args);
+    }, duration);
+  };
+}
+
 // Retrieves profile object from Spotify API
 async function getProfile() {
   let accessToken = localStorage.getItem("access_token");
@@ -64,4 +75,4 @@ async function getEvents() {
   return await events;
 }
 
-export { getProfile, getSearch, getEvents, getUserPlaylist };
+export { getProfile, getSearch, getEvents, getUserPlaylist, debounce };
