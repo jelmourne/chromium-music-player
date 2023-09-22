@@ -33,6 +33,7 @@ localStorage.getItem("access_token") == null
 document.getElementById("profile-followers").innerHTML =
   profile.followers.total + " Followers";
 
+//Updates dom to update search results from searchbox
 const search = document.getElementById("song-search");
 const searchResults = document.getElementById("search-result");
 
@@ -44,8 +45,9 @@ search.addEventListener("input", () => {
     >
       <div class="flex flex-col">
         <img
-          src="${element.album.images[0].url}"
           class="h-14 aspect-square"
+          src="${element.album.images[0].url}"
+          alt="${element.name}"
         />
       </div>
       <div class="flex flex-col mx-3">
@@ -62,6 +64,7 @@ search.addEventListener("input", () => {
   });
 });
 
+// Gets all users playlist and renders them on the page
 const playlistResult = document.getElementById("playlist-results");
 
 playlist.items.forEach((element) => {
