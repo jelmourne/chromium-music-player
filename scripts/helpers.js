@@ -99,4 +99,31 @@ async function getEvents(userCountry) {
   }
 }
 
+// // Add Image to Favourites
+// function saveFavourite(itemUrl) {
+//   // Loop through results to select favourite
+//   resultsArr.forEach((item) => {
+//       if (item.url.includes(itemUrl) && !favourites[itemUrl]) {
+//           favourites[itemUrl] = item;
+//           // Show save confirmation
+//           saveConfirmed.hidden = false;
+//           setTimeout(() => {
+//               saveConfirmed.hidden = true;
+//           }, 2000);
+//           // Save favourite to local storage
+//           localStorage.setItem('favouriteImages', JSON.stringify(favourites));
+//       }
+//   });
+// }
+
+// Remove from favourites
+// function removeFavourite(itemUrl) {
+//   if (favourites[itemUrl]) {
+//       delete favourites[itemUrl];
+//       // Save favourite to local storage
+//       localStorage.setItem('favouriteImages', JSON.stringify(favourites));
+//       updateDOM('favourites');
+//   }
+// }
+
 export { getProfile, getSearch, getEvents, getUserPlaylist, debounce };

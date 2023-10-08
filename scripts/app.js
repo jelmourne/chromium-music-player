@@ -1,11 +1,11 @@
-import { authorization } from "./authentication.js";
+import { authorization } from './authentication.js';
 import {
   getProfile,
   getSearch,
   getEvents,
   getUserPlaylist,
   debounce,
-} from "./helpers.js";
+} from './helpers.js';
 
 /* 
 // Check if user is logged in and change profile icon
@@ -34,36 +34,36 @@ const profile = await getProfile();
 const playlist = await getUserPlaylist();
 
 // Loading dropdown scripts
-var tag = document.createElement("script");
-tag.src = "https://unpkg.com/flowbite@1.5.1/dist/flowbite.js";
-document.getElementsByTagName("head")[0].appendChild(tag);
+var tag = document.createElement('script');
+tag.src = 'https://unpkg.com/flowbite@1.5.1/dist/flowbite.js';
+document.getElementsByTagName('head')[0].appendChild(tag);
 
 // DOM Manipulation Section
 try {
   document
-    .getElementById("login-button")
-    .addEventListener("click", authorization);
+    .getElementById('login-button')
+    .addEventListener('click', authorization);
 } catch {}
 
-document.getElementById("profile-name").innerHTML =
-  "Hi, " + profile.display_name;
+document.getElementById('profile-name').innerHTML =
+  'Hi, ' + profile.display_name;
 
-document.getElementById("profile-followers").innerHTML =
-  profile.followers.total + " Followers";
+document.getElementById('profile-followers').innerHTML =
+  profile.followers.total + ' Followers';
 
-document.getElementById("logout-button").addEventListener("click", () => {
-  localStorage.removeItem("access_token");
+document.getElementById('logout-button').addEventListener('click', () => {
+  localStorage.removeItem('access_token');
   location.reload();
 });
 
 // Modifies dom with search results from searchbox
-const search = document.getElementById("song-search");
-const searchResults = document.getElementById("search-result");
+const search = document.getElementById('song-search');
+const searchResults = document.getElementById('search-result');
 
 search.addEventListener(
-  "input",
+  'input',
   debounce(() => {
-    searchResults.innerHTML = "";
+    searchResults.innerHTML = '';
     getSearch(search.value).then((response) => {
       response.tracks.items.forEach((element) => {
         searchResults.innerHTML += `<hr><li
@@ -81,7 +81,7 @@ search.addEventListener(
           <h1 class="text-lg">${element.name}</h1>
           <div class="flex flex-row">
             <p class="text-lg me-2">${
-              element.explicit == true ? "&#127348" : ""
+              element.explicit == true ? '&#127348' : ''
             }</p>
             <p>${element.artists[0].name}</p>
           </div>
@@ -93,7 +93,7 @@ search.addEventListener(
 );
 
 // Gets all users playlist and renders them on the page
-const playlistResult = document.getElementById("playlist-dropdown");
+const playlistResult = document.getElementById('playlist-dropdown');
 
 playlist.items.forEach((element) => {
   playlistResult.innerHTML += `<hr><li
@@ -110,8 +110,8 @@ playlist.items.forEach((element) => {
           <div class="flex flex-row">
             <p>Tracks: ${element.tracks.total}</p>
             <p>&nbsp ${
-              element.owner.display_name == "undefined"
-                ? ""
+              element.owner.display_name == 'undefined'
+                ? ''
                 : element.owner.display_name
             }</p>
           </div>
@@ -119,37 +119,58 @@ playlist.items.forEach((element) => {
       </li>`;
 });
 
-// Events
+// ---------------
+//    CONCERTS
+// ---------------
 
-const eventDiv = document.getElementById("single-event");
-const eventsBox = document.getElementById("events-container");
+const concertsBox = document.getElementById('events-container');
+let concertsArr = await getEvents(profile.country);
+let favourites = {};
 
-
-
-let events = await getEvents(profile.country);
-
-console.log(eventsBox);
-console.log(eventDiv);
-
-events.forEach((e) => {
-  eventsBox.innerHTML += `
-  <div id="single-event" class="flex items-center justify-between gap-x-4 border-b-2 pb-5 pt-5 w-full">
-  <div class="flex-col">
-    <h4 id="event-header" class="mb-2 font-semibold">${e.name}</h4>
-    <p id="event-description">${e.date.toDateString()} @ ${e.time}</p>
-  </div>
-  <div class="flex">
-    <!-- Save to Favourites -->
-    <button id="save-event-btn" type="button">
-      <i class="fa-solid fa-music mx-3"></i>
-    </button>
-    <!-- Buy Ticket -->
-    <a href="${e.link}" target="_blank">
-      <button id="buy-ticket-btn" type="button">
-        <i class="fa-solid fa-music mx-3"></i>
+concertsArr.forEach((concert) => {
+  concertsBox.innerHTML += `
+  <div class="flex items-center justify-between gap-x-4 border-b-2 pb-5 pt-5 w-full">
+    <div class="flex-col">
+      <h4 class="mb-2 font-semibold">${concert.name}</h4>
+      <p>${concert.date.toDateString()} @ ${concert.time}</p>
+    </div>
+    <div class="flex">
+      <!-- Save to Favourites -->
+      <button id="${concert.link}" class="save-btn" type="button">
+        <i class="fa-regular fa-bookmark mx-3"></i>
       </button>
-    </a>
-  </div>`
+      <!-- Buy Ticket -->
+      <a class="buy-ticket-link" href="${concert.link}" target="_blank">
+        <button class="buy-ticket-btn" type="button">
+          <i class="fa-solid fa-ticket mx-3"></i>
+        </button>
+      </a>
+    </div>
+  </div> `;
 });
 
+let saveEventBtnArr = document.getElementsByClassName('save-btn');
+Array.from(saveEventBtnArr).forEach((btn) => {
+  btn.addEventListener('click', () => {
+    addToFavourites(btn.id);
+  });
+});
 
+function addToFavourites(concertUrl) {
+  concertsArr.forEach((concert) => {
+    if (concert.link.includes(concertUrl)) {
+      favourites[concertUrl] = concert;
+      console.log('hi');
+      localStorage.setItem('favourites', JSON.stringify(favourites));
+    }
+  });
+}
+
+// Remove from favourites
+function removeFavourite(concertUrl) {
+  if (favourites[concertUrl]) {
+      delete favourites[concertUrl];
+      // Save favourite to local storage
+      localStorage.setItem('favouriteImages', JSON.stringify(favourites));
+  }
+}
