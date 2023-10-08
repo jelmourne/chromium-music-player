@@ -1,103 +1,80 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Spotify Chrome Extension</title>
-    <script type="module" src="./scripts/app.js"></script>
-    <link rel="stylesheet" href="./styles/style.css" />
-    <script
-      src="https://kit.fontawesome.com/e2de3a3f6a.js"
-      crossorigin="anonymous"
-    ></script>
-  </head>
 
-  <body>
-    <div class="flex flex-row bg-slate-700 justify-between">
-      <div class="mx-5">
-        <div
-          class="rounded-3xl bg-white px-3 border-[1px] border-gray-500 border-solid"
-        >
-          <i class="fa-solid fa-magnifying-glass pe-2"></i>
-          <input class="outline-none w-24" placeholder="Search" />
-        </div>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Spotify Chrome Extension</title>
+  <script type="module" src="./scripts/app.js"></script>
+  <link rel="stylesheet" href="./styles/style.css" />
+  <script src="https://kit.fontawesome.com/e2de3a3f6a.js" crossorigin="anonymous"></script>
+</head>
+
+<body>
+  <!-- Nav Bar -->
+  <div class="flex flex-row bg-slate-700 justify-between">
+    <div class="mx-5">
+      <div class="rounded-3xl bg-white px-3 border-[1px] border-gray-500 border-solid">
+        <i class="fa-solid fa-magnifying-glass pe-2"></i>
+        <input class="outline-none w-24" placeholder="Search" id="song-search" />
       </div>
-      <div class="mx-5">
-        <button><i class="fa-solid fa-moon mx-3"></i></button>
+      <div id="search-result"></div>
+    </div>
+    <div class="mx-5">
+      <button><i class="fa-solid fa-moon mx-3"></i></button>
 
-        <!-- Toggle for playlist-->
-        <button><i class="fa-solid fa-music mx-3"></i></button>
-        <!---->
+      <!-- Toggle for playlist-->
+      <button id="playlist-toggle" data-dropdown-toggle="playlist-dropdown" type="button">
+        <i class="fa-solid fa-music mx-3"></i>
+      </button>
+      <div id="playlist-dropdown" class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg w-auto shadow-xl">
+      </div>
 
-        <!-- Toggle for account page -->
-        <button
-          id="profile"
-          data-dropdown-toggle="account-dropdown"
-          type="button"
-        >
-          <i class="fa-solid fa-user mx-3"></i>
-        </button>
-        <div
-          id="account-dropdown"
-          class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg w-44 shadow-xl"
-        >
-          <ul
-            class="py-2 text-sm text-gray-700 text-center"
-            aria-labelledby="profile"
-          >
-            <button id="login-button" type="button">
-              <li class="block px-4 py-2">Login</li>
-            </button>
-            <li class="block px-4 py-2" id="profile-name"></li>
-            <li class="block px-4 py-2" id="profile-followers">0 Followers</li>
-            <li>
-              <a
-                href="#"
-                class="block px-4 py-2 hover:bg-green-500 dark:hover:text-white transition-all"
-                >Saved Concerts</a
-              >
-            </li>
-            <li>
-              <a
-                id="logout-button"
-                href="#"
-                class="block px-4 py-2 text-red-600 hover:bg-green-500 dark:hover:text-white transition-all"
-                >Sign out</a
-              >
-            </li>
-          </ul>
-        </div>
+      <!---->
+      <!-- <div id="playlist-results"></div> -->
+      <!-- Toggle for account page -->
+      <button id="profile" data-dropdown-toggle="account-dropdown" type="button">
+        <i class="fa-solid fa-user mx-3"></i>
+      </button>
+      <div id="account-dropdown" class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg w-44 shadow-xl">
+        <ul class="py-2 text-sm text-gray-700 text-center" aria-labelledby="profile">
+          <button id="login-button" type="button">
+            <li class="block px-4 py-2">Login</li>
+          </button>
+          <li class="block px-4 py-2" id="profile-name"></li>
+          <li class="block px-4 py-2" id="profile-followers">0 Followers</li>
+          <li>
+            <a href="#" class="block px-4 py-2 hover:bg-green-500 dark:hover:text-white transition-all">Saved
+              Concerts</a>
+          </li>
+          <li>
+            <a id="logout-button" href="#"
+              class="block px-4 py-2 text-red-600 hover:bg-green-500 dark:hover:text-white transition-all">Sign out</a>
+          </li>
+        </ul>
       </div>
     </div>
+  </div>
 
-    <div class="flex items-center justify-center h-95vh">
-      <div
-        class="w-[325px] border border-solid border-gray-300 p-30 rounded-lg shadow-lg p-5"
-      >
-        <div class="flex items-center flex-col justify-center">
-          <img
-            class="w-1/2 aspect-sqaure"
-            src="https://media.architecturaldigest.com/photos/5890e0a43926c56a61e9a046/master/w_1920%2Cc_limit/Artist-Designed%2520Album%2520Covers%25202.jpg"
-          />
+  <!-- Player Container -->
+  <div class="absolute top-2/4 left-2/4 -translate-x-2/4 -translate-y-2/4">
+    <div class="border border-solid border-gray-300 p-30 rounded-lg shadow-lg p-5">
+      <div class="flex items-center flex-col justify-center">
+        <img class="w-1/2 aspect-sqaure"
+          src="https://media.architecturaldigest.com/photos/5890e0a43926c56a61e9a046/master/w_1920%2Cc_limit/Artist-Designed%2520Album%2520Covers%25202.jpg" />
 
-          <div class="text-2xl mt-5">Track Name</div>
-          <div class="text-xl mt-2">Track Artist</div>
-        </div>
+        <div class="text-2xl mt-5">Track Name</div>
+        <div class="text-xl mt-2">Track Artist</div>
+      </div>
 
-        <div class="flex items-center justify-center mt-5">
-          <div class="px-2">00:00</div>
-          <input
-            type="range"
-            min="1"
-            max="100"
-            value="0"
-            class="seek_slider w-3/4"
-            onchange="seekTo()"
-          />
-          <div class="px-2">00:00</div>
-        </div>
+      <div class="flex items-center justify-center mt-5">
+        <div class="px-2">00:00</div>
+        <input type="range" min="1" max="100" value="0" class="seek_slider w-3/4" onchange="seekTo()" />
+        <div class="px-2">00:00</div>
+      </div>
 
-        <div class="flex items-center justify-center mt-5">
+      <!-- Volume Slider -->
+      <!-- <div class="flex items-center justify-center mt-5">
           <i class="fa fa-volume-down px-2 cursor-pointer"></i>
           <input
             type="range"
@@ -108,48 +85,38 @@
             onchange="setVolume()"
           />
           <i class="fa fa-volume-up px-2 cursor-pointer"></i>
+        </div> -->
+
+      <div class="flex items-center justify-center mt-5">
+        <div class="p-3 opacity-80 hover:opacity-100 cursor-pointer" onclick="randomTrack()">
+          <i class="fa fa-random text-2xl" title="random"></i>
         </div>
 
-        <div class="flex items-center justify-center mt-5">
-          <div
-            class="p-3 opacity-80 hover:opacity-100 cursor-pointer"
-            onclick="randomTrack()"
-          >
-            <i class="fa fa-random text-2xl" title="random"></i>
-          </div>
+        <div class="prev-track p-3 opacity-80 hover:opacity-100 cursor-pointer" onclick="prevTrack()">
+          <i class="fa fa-step-backward text-2xl"></i>
+        </div>
 
-          <div
-            class="prev-track p-3 opacity-80 hover:opacity-100 cursor-pointer"
-            onclick="prevTrack()"
-          >
-            <i class="fa fa-step-backward text-2xl"></i>
-          </div>
+        <div class="playpause-track p-3 cursor-pointer" onclick="playpauseTrack()">
+          <i class="fa fa-play-circle text-5xl"></i>
+        </div>
 
-          <div
-            class="playpause-track p-3 cursor-pointer"
-            onclick="playpauseTrack()"
-          >
-            <i class="fa fa-play-circle text-5xl"></i>
-          </div>
+        <div class="next-track p-3 opacity-80 hover:opacity-100 cursor-pointer" onclick="nextTrack()">
+          <i class="fa fa-step-forward text-2xl"></i>
+        </div>
 
-          <div
-            class="next-track p-3 opacity-80 hover:opacity-100 cursor-pointer"
-            onclick="nextTrack()"
-          >
-            <i class="fa fa-step-forward text-2xl"></i>
-          </div>
-
-          <div
-            class="repeat-track p-3 opacity-80 hover:opacity-100 cursor-pointer"
-            onclick="repeatTrack()"
-          >
-            <i class="fa fa-repeat text-2xl" title="repeat"></i>
-          </div>
+        <div class="repeat-track p-3 opacity-80 hover:opacity-100 cursor-pointer" onclick="repeatTrack()">
+          <i class="fa fa-repeat text-2xl" title="repeat"></i>
         </div>
       </div>
-    </div>
 
-    <!--
+      <!-- Events -->
+      <div id="events-container" class="flex flex-col items-center justify-center mt-7 p-3"></div>
+      <!------------>
+
+    </div>
+  </div>
+
+  <!--
     <script src="https://sdk.scdn.co/spotify-player.js"></script>
     <script>
       window.onSpotifyWebPlaybackSDKReady = () => {
@@ -170,7 +137,8 @@
       };
     </script>
     -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/flowbite@1.5.1/dist/flowbite.js"></script>
-  </body>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/flowbite@1.5.1/dist/flowbite.js"></script>
+</body>
+
 </html>

@@ -93,7 +93,7 @@ search.addEventListener(
 );
 
 // Gets all users playlist and renders them on the page
-const playlistResult = document.getElementById("playlist-results");
+const playlistResult = document.getElementById("playlist-dropdown");
 
 playlist.items.forEach((element) => {
   playlistResult.innerHTML += `<hr><li
@@ -118,3 +118,38 @@ playlist.items.forEach((element) => {
         </div>
       </li>`;
 });
+
+// Events
+
+const eventDiv = document.getElementById("single-event");
+const eventsBox = document.getElementById("events-container");
+
+
+
+let events = await getEvents(profile.country);
+
+console.log(eventsBox);
+console.log(eventDiv);
+
+events.forEach((e) => {
+  eventsBox.innerHTML += `
+  <div id="single-event" class="flex items-center justify-between gap-x-4 border-b-2 pb-5 pt-5 w-full">
+  <div class="flex-col">
+    <h4 id="event-header" class="mb-2 font-semibold">${e.name}</h4>
+    <p id="event-description">${e.date.toDateString()} @ ${e.time}</p>
+  </div>
+  <div class="flex">
+    <!-- Save to Favourites -->
+    <button id="save-event-btn" type="button">
+      <i class="fa-solid fa-music mx-3"></i>
+    </button>
+    <!-- Buy Ticket -->
+    <a href="${e.link}" target="_blank">
+      <button id="buy-ticket-btn" type="button">
+        <i class="fa-solid fa-music mx-3"></i>
+      </button>
+    </a>
+  </div>`
+});
+
+
