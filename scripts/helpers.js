@@ -1,8 +1,9 @@
-import { concertsArr, concertsContainer } from './app';
+import { concertsArr } from './app';
 
 // Delay timer used for search
 function debounce(func, duration) {
   let timer;
+
   return (...args) => {
     clearTimeout(timer);
     timer = setTimeout(() => {
@@ -132,7 +133,6 @@ function removeFavourite(concertUrl) {
 function addButtonListeners(arr) {
   Array.from(arr).forEach((btn) => {
     btn.addEventListener('click', () => {
-      console.log(btn.id);
       document.getElementById(btn.id + 'icon').className ==
       'fa-regular fa-bookmark mx-3'
         ? addToFavourites(btn.id)
@@ -142,10 +142,11 @@ function addButtonListeners(arr) {
 }
 
 function showSavedConcerts() {
-  concertsContainer.innerHTML = '';
+  const concertsContainer = document.getElementById('events-container');
   let favourites = JSON.parse(localStorage.getItem('favourites'));
   let bookmarkIconClass;
 
+  concertsContainer.innerHTML = '';
   Object.values(favourites).forEach((savedConcert) => {
     bookmarkIconClass = favourites[savedConcert.link]
       ? 'fa-solid fa-bookmark mx-3'
@@ -173,7 +174,47 @@ function showSavedConcerts() {
       </div>
     </div>`;
   });
+
   addButtonListeners(document.getElementsByClassName('remove-btn'));
+  document.getElementById('toggle-favs-text').innerHTML = 'Show All Concerts';
+  document.getElementById('toggle-favs-btn').addEventListener('click', () => {
+    showAllConcerts(concertsArr);
+  });
+}
+
+function showAllConcerts(arr) {
+  const concertsContainer = document.getElementById('events-container');
+  const favourites = JSON.parse(localStorage.getItem('favourites')) || {};
+  const bookmarkButtonArr = document.getElementsByClassName('save-btn');
+  // Create concert information component from fetched data
+  arr.forEach((concert) => {
+    let bookmarkIconClass = favourites[concert.link]
+      ? 'fa-solid fa-bookmark mx-3'
+      : 'fa-regular fa-bookmark mx-3';
+    concertsContainer.innerHTML += `<div class="flex items-center justify-between gap-x-4 border-b-2 pb-5 pt-5 w-full">
+    <div class="flex-col">
+      <h4 class="mb-2 font-semibold">${concert.name}</h4>
+      <p>${concert.date.toDateString()} @ ${concert.time}</p>
+    </div>
+    <div class="flex">
+      <!-- Save to Favourites -->
+      <button id="${concert.link}" class="save-btn" type="button">
+        <i id="${concert.link + 'icon'}" class="${bookmarkIconClass}"></i>
+      </button>
+      <!-- Buy Ticket -->
+      <a class="buy-ticket-link" href="${concert.link}" target="_blank">
+        <button class="buy-ticket-btn" type="button">
+          <i class="fa-solid fa-ticket mx-3"></i>
+        </button>
+      </a>
+    </div>
+  </div>`;
+  });
+  addButtonListeners(bookmarkButtonArr);
+  document.getElementById('toggle-favs-text').innerHTML = 'Show Saved Concerts';
+  document.getElementById('toggle-favs-btn').addEventListener('click', () => {
+    showSavedConcerts(concertsArr);
+  });
 }
 
 export {
@@ -181,9 +222,7 @@ export {
   getSearch,
   getEvents,
   getUserPlaylist,
-  addToFavourites,
-  removeFavourite,
   showSavedConcerts,
-  addButtonListeners,
+  showAllConcerts,
   debounce,
 };
