@@ -129,10 +129,7 @@ playlist.items.forEach((element) => {
       </li>`;
 });
 
-// Fetch and show concerts
 let concertsArr = await getEvents(profile.country);
 showAllConcerts(concertsArr);
-
-
 
 export { concertsArr };

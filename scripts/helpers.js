@@ -127,6 +127,9 @@ function removeFavourite(concertUrl) {
     localStorage.setItem('favourites', JSON.stringify(favourites));
     let notSavedIcon = document.getElementById(concertUrl + 'icon');
     notSavedIcon.className = 'fa-regular fa-bookmark mx-3';
+    if (document.getElementById('toggle-favs-text').innerHTML == 'Show All Concerts') {
+      showSavedConcerts();
+    }
   }
 
   alert('Concert bookmark removed');
