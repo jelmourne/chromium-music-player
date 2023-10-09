@@ -115,19 +115,21 @@ function addToFavourites(concertUrl) {
       savedIcon.className = 'fa-solid fa-bookmark mx-3';
     }
   });
-  alert('Concert bookmarked :-)');
+  alert('Concert bookmark added :-)');
 }
 
 // Remove concert from favourites (local storage)
 function removeFavourite(concertUrl) {
   let favourites = JSON.parse(localStorage.getItem('favourites')) || {};
+
   if (favourites[concertUrl]) {
     delete favourites[concertUrl];
     localStorage.setItem('favourites', JSON.stringify(favourites));
     let notSavedIcon = document.getElementById(concertUrl + 'icon');
     notSavedIcon.className = 'fa-regular fa-bookmark mx-3';
   }
-  alert('bookmarkRemoved');
+
+  alert('Concert bookmark removed');
 }
 
 function addButtonListeners(arr) {
@@ -176,6 +178,7 @@ function showSavedConcerts() {
   });
 
   addButtonListeners(document.getElementsByClassName('remove-btn'));
+
   document.getElementById('toggle-favs-text').innerHTML = 'Show All Concerts';
   document.getElementById('toggle-favs-btn').addEventListener('click', () => {
     showAllConcerts(concertsArr);
@@ -186,6 +189,8 @@ function showAllConcerts(arr) {
   const concertsContainer = document.getElementById('events-container');
   const favourites = JSON.parse(localStorage.getItem('favourites')) || {};
   const bookmarkButtonArr = document.getElementsByClassName('save-btn');
+
+  concertsContainer.innerHTML = '';
   // Create concert information component from fetched data
   arr.forEach((concert) => {
     let bookmarkIconClass = favourites[concert.link]
@@ -210,7 +215,9 @@ function showAllConcerts(arr) {
     </div>
   </div>`;
   });
+
   addButtonListeners(bookmarkButtonArr);
+
   document.getElementById('toggle-favs-text').innerHTML = 'Show Saved Concerts';
   document.getElementById('toggle-favs-btn').addEventListener('click', () => {
     showSavedConcerts(concertsArr);

@@ -45,7 +45,9 @@ try {
   document
     .getElementById('login-button')
     .addEventListener('click', authorization);
-} catch {}
+} catch (ex) {
+  alert(ex);
+}
 
 document.getElementById('profile-name').innerHTML =
   'Hi, ' + profile.display_name;
@@ -53,10 +55,16 @@ document.getElementById('profile-name').innerHTML =
 document.getElementById('profile-followers').innerHTML =
   profile.followers.total + ' Followers';
 
+document.getElementById('toggle-favs-btn').addEventListener('click', () => {
+  showSavedConcerts();
+});
+
 document.getElementById('logout-button').addEventListener('click', () => {
   localStorage.removeItem('access_token');
   location.reload();
 });
+
+
 
 // Modifies dom with search results from searchbox
 const search = document.getElementById('song-search');
@@ -125,8 +133,6 @@ playlist.items.forEach((element) => {
 let concertsArr = await getEvents(profile.country);
 showAllConcerts(concertsArr);
 
-document.getElementById('toggle-favs-btn').addEventListener('click', () => {
-  showSavedConcerts();
-});
+
 
 export { concertsArr };
