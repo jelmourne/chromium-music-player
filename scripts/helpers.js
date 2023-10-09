@@ -1,3 +1,5 @@
+import { concertsArr, concertsContainer } from './app';
+
 // Delay timer used for search
 function debounce(func, duration) {
   let timer;
@@ -57,7 +59,7 @@ async function getUserPlaylist() {
 }
 
 // Function that calls ticketmaster API to fetch events in the users country. It takes the user's
-// country as an argument and returns an array of events. The function will loop through the fetched 
+// country as an argument and returns an array of events. The function will loop through the fetched
 // data and store the name, date, time, url, and image of the event. Duplicate tours in different cities will be ignored.
 
 async function getEvents(userCountry) {
@@ -69,7 +71,7 @@ async function getEvents(userCountry) {
       `${rootURL}events.json?classificationName=music&apikey=${apiKey}&countryCode=${userCountry}`
     );
     const data = await response.json();
-    console.log(data)
+    // console.log(data)
     let fetchedEvents = data._embedded.events;
     let filteredEvents = [];
     for (let i = 0; i < fetchedEvents.length; i++) {
@@ -81,8 +83,10 @@ async function getEvents(userCountry) {
         image: fetchedEvents[i].images[0].url,
         genre: fetchedEvents[i].classifications[0].genre.name,
       };
+
       if (i > 0) {
         if (
+          // Check if name of last concert added is the same as current event
           filteredEvents[filteredEvents.length - 1].name.includes(
             event.name.substr(0, 5)
           )
@@ -99,31 +103,62 @@ async function getEvents(userCountry) {
   }
 }
 
-// // Add Image to Favourites
-// function saveFavourite(itemUrl) {
-//   // Loop through results to select favourite
-//   resultsArr.forEach((item) => {
-//       if (item.url.includes(itemUrl) && !favourites[itemUrl]) {
-//           favourites[itemUrl] = item;
-//           // Show save confirmation
-//           saveConfirmed.hidden = false;
-//           setTimeout(() => {
-//               saveConfirmed.hidden = true;
-//           }, 2000);
-//           // Save favourite to local storage
-//           localStorage.setItem('favouriteImages', JSON.stringify(favourites));
-//       }
-//   });
-// }
+// Add concert to favourites (local storage)
+function addToFavourites(concertUrl) {
+  let favourites = JSON.parse(localStorage.getItem('favourites')) || {};
+  concertsArr.forEach((concert) => {
+    if (concert.link.includes(concertUrl)) {
+      favourites[concertUrl] = concert;
+      localStorage.setItem('favourites', JSON.stringify(favourites));
+      let savedIcon = document.getElementById(concertUrl + 'icon');
+      savedIcon.className = 'fa-solid fa-bookmark mx-3';
+    }
+  });
+  alert('Concert bookmarked :-)');
+}
 
-// Remove from favourites
-// function removeFavourite(itemUrl) {
-//   if (favourites[itemUrl]) {
-//       delete favourites[itemUrl];
-//       // Save favourite to local storage
-//       localStorage.setItem('favouriteImages', JSON.stringify(favourites));
-//       updateDOM('favourites');
-//   }
-// }
+// Remove concert from favourites (local storage)
+function removeFavourite(concertUrl) {
+  if (favourites[concertUrl]) {
+    delete favourites[concertUrl];
+    localStorage.setItem('favouriteImages', JSON.stringify(favourites));
+  }
+}
 
-export { getProfile, getSearch, getEvents, getUserPlaylist, debounce };
+function showSavedConcerts() {
+  concertsContainer.innerHTML = '';
+  let favourites = JSON.parse(localStorage.getItem('favourites'));
+
+  Object.values(favourites).forEach((savedConcert) => {
+    let bookmarkIconClass = favourites[savedConcert.link] ? "fa-solid fa-bookmark mx-3" : "fa-regular fa-bookmark mx-3";
+    concertsContainer.innerHTML += `<div class="flex items-center justify-between gap-x-4 border-b-2 pb-5 pt-5 w-full">
+      <div class="flex-col">
+        <h4 class="mb-2 font-semibold">${savedConcert.name}</h4>
+        <p>${new Date(savedConcert.date).toDateString()} @ ${savedConcert.time}</p>
+      </div>
+      <div class="flex">
+        <!-- Save to Favourites -->
+        <button id="${savedConcert.link}" class="save-btn" type="button">
+          <i class="${bookmarkIconClass}"></i>
+        </button>
+        <!-- Buy Ticket -->
+        <a class="buy-ticket-link" href="${savedConcert.link}" target="_blank">
+          <button class="buy-ticket-btn" type="button">
+            <i class="fa-solid fa-ticket mx-3"></i>
+          </button>
+        </a>
+      </div>
+    </div>`;
+  });
+}
+
+export {
+  getProfile,
+  getSearch,
+  getEvents,
+  getUserPlaylist,
+  addToFavourites,
+  removeFavourite,
+  showSavedConcerts,
+  debounce,
+};

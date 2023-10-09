@@ -4,6 +4,9 @@ import {
   getSearch,
   getEvents,
   getUserPlaylist,
+  addToFavourites,
+  removeFavourite,
+  showSavedConcerts,
   debounce,
 } from './helpers.js';
 
@@ -119,17 +122,20 @@ playlist.items.forEach((element) => {
       </li>`;
 });
 
-// ---------------
-//    CONCERTS
-// ---------------
+// **********************
+//    CONCERT DROPDOWN
+// **********************
 
-const concertsBox = document.getElementById('events-container');
+// Declare variables & fetch data from ticket master API
+const concertsContainer = document.getElementById('events-container');
+let saveEventBtnArr = document.getElementsByClassName('save-btn');
 let concertsArr = await getEvents(profile.country);
-let favourites = {};
+let favourites = JSON.parse(localStorage.getItem('favourites')) || {};
 
+// Create concert information component from fetched data
 concertsArr.forEach((concert) => {
-  concertsBox.innerHTML += `
-  <div class="flex items-center justify-between gap-x-4 border-b-2 pb-5 pt-5 w-full">
+  let bookmarkIconClass = favourites[concert.link] ? "fa-solid fa-bookmark mx-3" : "fa-regular fa-bookmark mx-3";
+  concertsContainer.innerHTML += `<div class="flex items-center justify-between gap-x-4 border-b-2 pb-5 pt-5 w-full">
     <div class="flex-col">
       <h4 class="mb-2 font-semibold">${concert.name}</h4>
       <p>${concert.date.toDateString()} @ ${concert.time}</p>
@@ -137,7 +143,7 @@ concertsArr.forEach((concert) => {
     <div class="flex">
       <!-- Save to Favourites -->
       <button id="${concert.link}" class="save-btn" type="button">
-        <i class="fa-regular fa-bookmark mx-3"></i>
+        <i id="${concert.link + "icon"}" class="${bookmarkIconClass}"></i>
       </button>
       <!-- Buy Ticket -->
       <a class="buy-ticket-link" href="${concert.link}" target="_blank">
@@ -146,31 +152,19 @@ concertsArr.forEach((concert) => {
         </button>
       </a>
     </div>
-  </div> `;
+  </div>`;
 });
 
-let saveEventBtnArr = document.getElementsByClassName('save-btn');
+// Add event listener to each favourite button
 Array.from(saveEventBtnArr).forEach((btn) => {
   btn.addEventListener('click', () => {
     addToFavourites(btn.id);
   });
 });
 
-function addToFavourites(concertUrl) {
-  concertsArr.forEach((concert) => {
-    if (concert.link.includes(concertUrl)) {
-      favourites[concertUrl] = concert;
-      console.log('hi');
-      localStorage.setItem('favourites', JSON.stringify(favourites));
-    }
-  });
-}
+document.getElementById('show-favs-btn').addEventListener('click', () => {
+  showSavedConcerts();
+});
 
-// Remove from favourites
-function removeFavourite(concertUrl) {
-  if (favourites[concertUrl]) {
-      delete favourites[concertUrl];
-      // Save favourite to local storage
-      localStorage.setItem('favouriteImages', JSON.stringify(favourites));
-  }
-}
+
+export { concertsArr, concertsContainer }

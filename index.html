@@ -21,7 +21,7 @@
       <div id="search-result"></div>
     </div>
     <div class="mx-5">
-      <button><i class="fa-solid fa-moon mx-3"></i></button>
+    <button><i class="fa-solid fa-moon mx-3"></i></button>
 
       <!-- Toggle for playlist-->
       <button id="playlist-toggle" data-dropdown-toggle="playlist-dropdown" type="button">
@@ -43,10 +43,9 @@
           </button>
           <li class="block px-4 py-2" id="profile-name"></li>
           <li class="block px-4 py-2" id="profile-followers">0 Followers</li>
-          <li>
-            <a href="#" class="block px-4 py-2 hover:bg-green-500 dark:hover:text-white transition-all">Saved
-              Concerts</a>
-          </li>
+          <button id="show-favs-btn" class="hover:bg-green-500 dark:hover:text-white transition-all w-full">
+            <li id="see-bookmarks-toggle" class="block px-4 py-2">Saved Concerts</li>
+          </button>
           <li>
             <a id="logout-button" href="#"
               class="block px-4 py-2 text-red-600 hover:bg-green-500 dark:hover:text-white transition-all">Sign out</a>
@@ -110,7 +109,7 @@
       </div>
 
       <!-- Events -->
-      <div id="events-container" class="flex flex-col items-center justify-center mt-7 p-3"></div>
+      <div id="events-container" class="flex flex-col items-center justify-center mt-7 p-3 max-h-96 overflow-auto"></div>
       <!------------>
 
     </div>
