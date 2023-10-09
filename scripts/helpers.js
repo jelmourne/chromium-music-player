@@ -119,37 +119,61 @@ function addToFavourites(concertUrl) {
 
 // Remove concert from favourites (local storage)
 function removeFavourite(concertUrl) {
+  let favourites = JSON.parse(localStorage.getItem('favourites')) || {};
   if (favourites[concertUrl]) {
     delete favourites[concertUrl];
-    localStorage.setItem('favouriteImages', JSON.stringify(favourites));
+    localStorage.setItem('favourites', JSON.stringify(favourites));
+    let notSavedIcon = document.getElementById(concertUrl + 'icon');
+    notSavedIcon.className = 'fa-regular fa-bookmark mx-3';
   }
+  alert('bookmarkRemoved');
+}
+
+function addButtonListeners(arr) {
+  Array.from(arr).forEach((btn) => {
+    btn.addEventListener('click', () => {
+      console.log(btn.id);
+      document.getElementById(btn.id + 'icon').className ==
+      'fa-regular fa-bookmark mx-3'
+        ? addToFavourites(btn.id)
+        : removeFavourite(btn.id);
+    });
+  });
 }
 
 function showSavedConcerts() {
   concertsContainer.innerHTML = '';
   let favourites = JSON.parse(localStorage.getItem('favourites'));
+  let bookmarkIconClass;
 
   Object.values(favourites).forEach((savedConcert) => {
-    let bookmarkIconClass = favourites[savedConcert.link] ? "fa-solid fa-bookmark mx-3" : "fa-regular fa-bookmark mx-3";
+    bookmarkIconClass = favourites[savedConcert.link]
+      ? 'fa-solid fa-bookmark mx-3'
+      : 'fa-regular fa-bookmark mx-3';
     concertsContainer.innerHTML += `<div class="flex items-center justify-between gap-x-4 border-b-2 pb-5 pt-5 w-full">
       <div class="flex-col">
         <h4 class="mb-2 font-semibold">${savedConcert.name}</h4>
-        <p>${new Date(savedConcert.date).toDateString()} @ ${savedConcert.time}</p>
+        <p>${new Date(savedConcert.date).toDateString()} @ ${
+      savedConcert.time
+    }</p>
       </div>
       <div class="flex">
         <!-- Save to Favourites -->
-        <button id="${savedConcert.link}" class="save-btn" type="button">
-          <i class="${bookmarkIconClass}"></i>
+        <button id="${savedConcert.link}" class="remove-btn" type="button">
+          <i id="${
+            savedConcert.link + 'icon'
+          }" class="${bookmarkIconClass}"></i>
         </button>
         <!-- Buy Ticket -->
         <a class="buy-ticket-link" href="${savedConcert.link}" target="_blank">
           <button class="buy-ticket-btn" type="button">
-            <i class="fa-solid fa-ticket mx-3"></i>
+          <i class="fa-solid fa-ticket mx-3"></i>
           </button>
         </a>
       </div>
     </div>`;
   });
+  addButtonListeners(document.getElementsByClassName('remove-btn'));
 }
 
 export {
@@ -160,5 +184,6 @@ export {
   addToFavourites,
   removeFavourite,
   showSavedConcerts,
+  addButtonListeners,
   debounce,
 };
