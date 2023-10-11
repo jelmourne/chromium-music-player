@@ -1,4 +1,4 @@
-import { authorization } from './authentication.js';
+import { authorization } from "./authentication.js";
 import {
   getProfile,
   getSearch,
@@ -6,8 +6,9 @@ import {
   getUserPlaylist,
   showSavedConcerts,
   showAllConcerts,
+  getCurrentTrack,
   debounce,
-} from './helpers.js';
+} from "./helpers.js";
 
 /* 
 // Check if user is logged in and change profile icon
@@ -34,50 +35,52 @@ id="profile-button"
 // Declaring consts
 const profile = await getProfile();
 const playlist = await getUserPlaylist();
+const currentSong = await getCurrentTrack();
+console.log(currentSong);
 
 // Loading dropdown scripts
-var tag = document.createElement('script');
-tag.src = 'https://unpkg.com/flowbite@1.5.1/dist/flowbite.js';
-document.getElementsByTagName('head')[0].appendChild(tag);
+var tag = document.createElement("script");
+tag.src = "https://unpkg.com/flowbite@1.5.1/dist/flowbite.js";
+document.getElementsByTagName("head")[0].appendChild(tag);
 
 // DOM Manipulation Section
 try {
   document
-    .getElementById('login-button')
-    .addEventListener('click', authorization);
+    .getElementById("login-button")
+    .addEventListener("click", authorization);
 } catch (ex) {
   alert(ex);
 }
 
-document.getElementById('profile-name').innerHTML =
-  'Hi, ' + profile.display_name;
+document.getElementById("profile-name").innerHTML =
+  "Hi, " + profile.display_name;
 
-document.getElementById('profile-followers').innerHTML =
-  profile.followers.total + ' Followers';
+document.getElementById("profile-followers").innerHTML =
+  profile.followers.total + " Followers";
 
-document.getElementById('toggle-favs-btn').addEventListener('click', () => {
+document.getElementById("toggle-favs-btn").addEventListener("click", () => {
   showSavedConcerts();
 });
 
-document.getElementById('logout-button').addEventListener('click', () => {
-  localStorage.removeItem('access_token');
+document.getElementById("logout-button").addEventListener("click", () => {
+  localStorage.removeItem("access_token");
   location.reload();
 });
 
-
-
 // Modifies dom with search results from searchbox
-const search = document.getElementById('song-search');
-const searchResults = document.getElementById('search-result');
+const search = document.getElementById("song-search");
+const searchResults = document.getElementById("search-result");
 
 search.addEventListener(
-  'input',
+  "input",
   debounce(() => {
-    searchResults.innerHTML = '';
+    searchResults.innerHTML = "";
     getSearch(search.value).then((response) => {
       response.tracks.items.forEach((element) => {
         searchResults.innerHTML += `<hr><li
-        class="flex w-auto bg-white p-2 hover:bg-green-500 hover:text-white transition-all cursor-pointer"
+        class="flex w-auto bg-white p-2 hover:bg-green-500 hover:text-white transition-all cursor-pointer" onclick="playSong('${
+          element.uri
+        }')"
       >
       
         <div class="flex flex-col">
@@ -91,7 +94,7 @@ search.addEventListener(
           <h1 class="text-lg">${element.name}</h1>
           <div class="flex flex-row">
             <p class="text-lg me-2">${
-              element.explicit == true ? '&#127348' : ''
+              element.explicit == true ? "&#127348" : ""
             }</p>
             <p>${element.artists[0].name}</p>
           </div>
@@ -103,31 +106,36 @@ search.addEventListener(
 );
 
 // Gets all users playlist and renders them on the page
-const playlistResult = document.getElementById('playlist-dropdown');
+const playlistResult = document.getElementById("playlist-dropdown");
 
-playlist.items.forEach((element) => {
-  playlistResult.innerHTML += `<hr><li
-        class="flex w-auto bg-white p-1 hover:bg-green-500 hover:text-white transition-all cursor-pointer"
-      >
-        <div class="flex flex-col">
-          <img
-            src="${element.images[0].url}"
-            class="h-14 aspect-square"
-          />
-        </div>
-        <div class="flex flex-col mx-3">
-          <h1 class="text-lg">${element.name}</h1>
-          <div class="flex flex-row">
-            <p>Tracks: ${element.tracks.total}</p>
-            <p>&nbsp ${
-              element.owner.display_name == 'undefined'
-                ? ''
-                : element.owner.display_name
-            }</p>
+if (playlist.total != 0) {
+  playlist.items.forEach((element) => {
+    playlistResult.innerHTML += `<hr><li
+          class="flex w-auto bg-white p-1 hover:bg-green-500 hover:text-white transition-all cursor-pointer"
+        >
+          <div class="flex flex-col">
+            <img
+              src="${element.images[0].url}"
+              class="h-14 aspect-square"
+            />
           </div>
-        </div>
-      </li>`;
-});
+          <div class="flex flex-col mx-3">
+            <h1 class="text-lg">${element.name}</h1>
+            <div class="flex flex-row">
+              <p>Tracks: ${element.tracks.total}</p>
+              <p>&nbsp ${
+                element.owner.display_name == "undefined"
+                  ? ""
+                  : element.owner.display_name
+              }</p>
+            </div>
+          </div>
+        </li>`;
+  });
+} else {
+  playlistResult.innerHTML =
+    "<li class='flex w-auto bg-white p-1 m-6'>No Playlist Available</li>";
+}
 
 let concertsArr = await getEvents(profile.country);
 showAllConcerts(concertsArr);
