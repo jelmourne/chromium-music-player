@@ -1,11 +1,13 @@
-import { authorization } from "./authentication.js";
+import { authorization } from './authentication.js';
 import {
   getProfile,
   getSearch,
   getEvents,
   getUserPlaylist,
+  showSavedConcerts,
+  showAllConcerts,
   debounce,
-} from "./helpers.js";
+} from './helpers.js';
 
 /* 
 // Check if user is logged in and change profile icon
@@ -34,36 +36,44 @@ const profile = await getProfile();
 const playlist = await getUserPlaylist();
 
 // Loading dropdown scripts
-var tag = document.createElement("script");
-tag.src = "https://unpkg.com/flowbite@1.5.1/dist/flowbite.js";
-document.getElementsByTagName("head")[0].appendChild(tag);
+var tag = document.createElement('script');
+tag.src = 'https://unpkg.com/flowbite@1.5.1/dist/flowbite.js';
+document.getElementsByTagName('head')[0].appendChild(tag);
 
 // DOM Manipulation Section
 try {
   document
-    .getElementById("login-button")
-    .addEventListener("click", authorization);
-} catch {}
+    .getElementById('login-button')
+    .addEventListener('click', authorization);
+} catch (ex) {
+  alert(ex);
+}
 
-document.getElementById("profile-name").innerHTML =
-  "Hi, " + profile.display_name;
+document.getElementById('profile-name').innerHTML =
+  'Hi, ' + profile.display_name;
 
-document.getElementById("profile-followers").innerHTML =
-  profile.followers.total + " Followers";
+document.getElementById('profile-followers').innerHTML =
+  profile.followers.total + ' Followers';
 
-document.getElementById("logout-button").addEventListener("click", () => {
-  localStorage.removeItem("access_token");
+document.getElementById('toggle-favs-btn').addEventListener('click', () => {
+  showSavedConcerts();
+});
+
+document.getElementById('logout-button').addEventListener('click', () => {
+  localStorage.removeItem('access_token');
   location.reload();
 });
 
+
+
 // Modifies dom with search results from searchbox
-const search = document.getElementById("song-search");
-const searchResults = document.getElementById("search-result");
+const search = document.getElementById('song-search');
+const searchResults = document.getElementById('search-result');
 
 search.addEventListener(
-  "input",
+  'input',
   debounce(() => {
-    searchResults.innerHTML = "";
+    searchResults.innerHTML = '';
     getSearch(search.value).then((response) => {
       response.tracks.items.forEach((element) => {
         searchResults.innerHTML += `<hr><li
@@ -81,7 +91,7 @@ search.addEventListener(
           <h1 class="text-lg">${element.name}</h1>
           <div class="flex flex-row">
             <p class="text-lg me-2">${
-              element.explicit == true ? "&#127348" : ""
+              element.explicit == true ? '&#127348' : ''
             }</p>
             <p>${element.artists[0].name}</p>
           </div>
@@ -93,7 +103,7 @@ search.addEventListener(
 );
 
 // Gets all users playlist and renders them on the page
-const playlistResult = document.getElementById("playlist-results");
+const playlistResult = document.getElementById('playlist-dropdown');
 
 playlist.items.forEach((element) => {
   playlistResult.innerHTML += `<hr><li
@@ -110,11 +120,16 @@ playlist.items.forEach((element) => {
           <div class="flex flex-row">
             <p>Tracks: ${element.tracks.total}</p>
             <p>&nbsp ${
-              element.owner.display_name == "undefined"
-                ? ""
+              element.owner.display_name == 'undefined'
+                ? ''
                 : element.owner.display_name
             }</p>
           </div>
         </div>
       </li>`;
 });
+
+let concertsArr = await getEvents(profile.country);
+showAllConcerts(concertsArr);
+
+export { concertsArr };
