@@ -60,20 +60,13 @@ async function getUserPlaylist() {
   return await response.json();
 }
 
-// Get currently playing song
-async function getCurrentTrack() {
-  let accessToken = localStorage.getItem("access_token");
+// Keeps track of remaining song duration
 
-  const response = await fetch(
-    "https://api.spotify.com/v1/me/player/currently-playing",
-    {
-      mode: "cors",
-      headers: {
-        Authorization: "Bearer " + accessToken,
-      },
-    }
-  );
-  return await response.json();
+function getMinAndSec(ms) {
+  var min = Math.floor(ms / 60000);
+  var sec = ((ms % 60000) / 1000).toFixed(0);
+
+  return sec == 60 ? min + 1 + ":00" : min + ":" + (sec < 10 ? "0" : "") + sec;
 }
 
 // Plays selected song
@@ -257,5 +250,5 @@ export {
   showSavedConcerts,
   showAllConcerts,
   debounce,
-  getCurrentTrack,
+  getMinAndSec,
 };

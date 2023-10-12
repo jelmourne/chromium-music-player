@@ -17,7 +17,7 @@
     <div class="flex flex-row bg-slate-700 justify-between">
       <div class="mx-5">
         <div
-          class="rounded-3xl bg-white px-3 border-[1px] border-gray-500 border-solid w-52"
+          class="rounded-3xl bg-white px-3 border-[1px] border-gray-500 border-solid w-40"
         >
           <i class="fa-solid fa-magnifying-glass pe-2"></i>
           <input
@@ -26,7 +26,7 @@
             id="song-search"
           />
         </div>
-        <div id="search-result"></div>
+        <div id="search-result" class="absolute"></div>
       </div>
       <div class="mx-5">
         <button><i class="fa-solid fa-moon mx-3"></i></button>
@@ -44,8 +44,6 @@
           class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg w-auto shadow-xl overflow-auto h-72"
         ></div>
 
-        <!---->
-        <!-- <div id="playlist-results"></div> -->
         <!-- Toggle for account page -->
         <button
           id="profile"
@@ -101,51 +99,49 @@
         </div>
 
         <div class="flex items-center justify-center mt-5">
-          <div class="px-2">00:00</div>
+          <div class="px-2" id="currTime">00:00</div>
           <meter
             id="song-duration"
             min="0"
             max="100"
-            value="0"
+            value=""
             class="seek_slider w-3/4"
             onchange="seekTo()"
           ></meter>
-          <div class="px-2">00:00</div>
+          <div class="px-2" id="endTime">00:00</div>
         </div>
 
         <div class="flex items-center justify-center m-5">
           <div
             class="p-3 opacity-80 hover:opacity-100 cursor-pointer"
-            onclick="randomTrack()"
+            id="randomTrack"
           >
-            <i class="fa fa-random text-2xl" title="random"></i>
+            <i class="fa fa-random text-2xl"></i>
           </div>
 
           <div
-            class="prev-track p-3 opacity-80 hover:opacity-100 cursor-pointer"
+            class="p-3 opacity-80 hover:opacity-100 cursor-pointer"
             id="prevTrack"
           >
             <i class="fa fa-step-backward text-2xl"></i>
           </div>
 
-          <div
-            class="playpause-track p-3 cursor-pointer active:scale-90 transition-all"
-          >
+          <div class="p-3 cursor-pointer active:scale-90 transition-all">
             <i id="togglePlay" class="fa fa-play-circle text-5xl"></i>
           </div>
 
           <div
-            class="next-track p-3 opacity-80 hover:opacity-100 cursor-pointer"
+            class="p-3 opacity-80 hover:opacity-100 cursor-pointer"
             id="nextTrack"
           >
             <i class="fa fa-step-forward text-2xl"></i>
           </div>
 
           <div
-            class="repeat-track p-3 opacity-80 hover:opacity-100 cursor-pointer"
-            onclick="repeatTrack()"
+            class="p-3 opacity-80 hover:opacity-100 cursor-pointer"
+            id="repeatTrack"
           >
-            <i class="fa fa-repeat text-2xl" title="repeat"></i>
+            <i class="fa fa-repeat text-2xl"></i>
           </div>
         </div>
 
@@ -158,78 +154,7 @@
       </div>
     </div>
 
-    <script src="https://sdk.scdn.co/spotify-player.js"></script>
     <script>
-      window.onSpotifyWebPlaybackSDKReady = () => {
-        const token = localStorage.getItem("access_token");
-        const player = new Spotify.Player({
-          name: "Web Playback SDK Quick Start Player",
-          getOAuthToken: (cb) => {
-            cb(token);
-          },
-          volume: 0.3,
-        });
-
-        player.addListener("ready", ({ device_id }) => {
-          console.log("Ready with Device ID", device_id);
-
-          const connect_to_device = () => {
-            const accessToken = localStorage.getItem("access_token");
-            console.log("Changing to device");
-            let change_device = fetch("https://api.spotify.com/v1/me/player", {
-              method: "PUT",
-              body: JSON.stringify({
-                device_ids: [device_id],
-                play: false,
-              }),
-              headers: new Headers({
-                Authorization: "Bearer " + accessToken,
-              }),
-            }).then((response) => console.log(response));
-          };
-          connect_to_device();
-        });
-
-        player.addListener("not_ready", ({ device_id }) => {
-          console.log("Device ID has gone offline", device_id);
-        });
-
-        player.addListener("authentication_error", ({ message }) => {
-          console.error(message);
-        });
-
-        player.addListener("account_error", ({ message }) => {
-          console.error(message);
-        });
-
-        player.connect().then((success) => {
-          if (success) {
-            console.log(
-              "The Web Playback SDK successfully connected to Spotify!"
-            );
-          }
-        });
-
-        player.on("player_state_changed", (state) => {});
-
-        // Toggle play
-        const playButton = document.getElementById("togglePlay");
-
-        playButton.onclick = function () {
-          player.togglePlay();
-          playButton.classList.toggle("fa-solid");
-          playButton.classList.toggle("fa-circle-pause");
-        };
-
-        document.getElementById("prevTrack").onclick = function () {
-          player.previousTrack();
-        };
-
-        document.getElementById("nextTrack").onclick = function () {
-          player.nextTrack();
-        };
-      };
-
       async function playSong(uri) {
         const accessToken = localStorage.getItem("access_token");
 
@@ -244,7 +169,7 @@
               Authorization: "Bearer " + accessToken,
             }),
           }
-        ).then((data) => console.log(data));
+        );
       }
     </script>
   </body>

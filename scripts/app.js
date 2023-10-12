@@ -6,8 +6,8 @@ import {
   getUserPlaylist,
   showSavedConcerts,
   showAllConcerts,
-  getCurrentTrack,
   debounce,
+  getMinAndSec,
 } from "./helpers.js";
 
 /* 
@@ -35,7 +35,6 @@ id="profile-button"
 // Declaring consts
 const profile = await getProfile();
 const playlist = await getUserPlaylist();
-const currentSong = await getCurrentTrack();
 
 // Loading dropdown scripts
 var tag = document.createElement("script");
@@ -43,7 +42,6 @@ tag.src = "https://unpkg.com/flowbite@1.5.1/dist/flowbite.js";
 document.getElementsByTagName("head")[0].appendChild(tag);
 
 // DOM Manipulation Section
-
 try {
   document
     .getElementById("login-button")
@@ -51,18 +49,6 @@ try {
 } catch (ex) {
   alert(ex);
 }
-
-document.getElementById("current-song-img").src =
-  currentSong.item.album.images[0].url;
-
-document.getElementById("current-song-name").innerHTML = currentSong.item.name;
-
-document.getElementById("current-song-artist").innerHTML =
-  currentSong.item.artists[0].name;
-
-const duration = document.getElementById("song-duration");
-duration.max = currentSong.item.duration_ms;
-duration.value = currentSong.progress_ms;
 
 document.getElementById("profile-name").innerHTML =
   "Hi, " + profile.display_name;
@@ -78,6 +64,124 @@ document.getElementById("logout-button").addEventListener("click", () => {
   localStorage.removeItem("access_token");
   location.reload();
 });
+
+// Spotify player
+var tag = document.createElement("script");
+tag.src = "https://sdk.scdn.co/spotify-player.js";
+document.getElementsByTagName("body")[0].appendChild(tag);
+
+const playButton = document.getElementById("togglePlay");
+const duration = document.getElementById("song-duration");
+const currentTime = document.getElementById("currTime");
+
+/*
+var timer;
+
+function startTimer() {
+  timer = window.setInterval(function () {
+    startTime = new Date(startTime.getTime() + 1000);
+    duration.value = startTime;
+    currentTime.innerHTML = getMinAndSec(startTime);
+  }, 1000);
+
+  if (startTime >= endTime) {
+    clearTimeout(timer);
+  }
+}
+
+function clearTimer() {
+  console.log(timer);
+  clearTimeout(timer);
+}
+*/
+
+window.onSpotifyWebPlaybackSDKReady = () => {
+  const token = localStorage.getItem("access_token");
+
+  const player = new Spotify.Player({
+    name: "Web Playback SDK Quick Start Player",
+    volume: 0.3,
+    getOAuthToken: (cb) => {
+      cb(token);
+    },
+  });
+
+  player.addListener("ready", ({ device_id }) => {
+    const connect_to_device = () => {
+      const accessToken = localStorage.getItem("access_token");
+      console.log("Changing to device");
+      let changeDevice = fetch("https://api.spotify.com/v1/me/player", {
+        method: "PUT",
+        body: JSON.stringify({
+          device_ids: [device_id],
+          play: false,
+        }),
+        headers: new Headers({
+          Authorization: "Bearer " + accessToken,
+        }),
+      });
+    };
+    connect_to_device();
+  });
+
+  player.addListener("not_ready", ({ device_id }) => {
+    console.log("Device ID has gone offline", device_id);
+  });
+
+  player.addListener("authentication_error", ({ message }) => {
+    console.error(message);
+  });
+
+  player.addListener("account_error", ({ message }) => {
+    console.error(message);
+  });
+
+  player.connect().then((success) => {
+    if (success) {
+      console.log("The Web Playback SDK successfully connected to Spotify!");
+    }
+  });
+
+  player.on("player_state_changed", (state) => {
+    var startTime = new Date(state.position);
+    var endTime = new Date(state.duration);
+
+    if (state.paused == false) {
+      playButton.classList.add("fa-circle-pause");
+      playButton.classList.add("fa-solid");
+    } else {
+      playButton.classList.remove("fa-circle-pause");
+      playButton.classList.remove("fa-solid");
+    }
+    document.getElementById("current-song-name").innerHTML =
+      state.track_window.current_track.name;
+
+    document.getElementById("current-song-img").src =
+      state.track_window.current_track.album.images[0].url;
+
+    document.getElementById("current-song-artist").innerHTML =
+      state.track_window.current_track.artists[0].name;
+
+    currentTime.innerHTML = getMinAndSec(state.position);
+    document.getElementById("endTime").innerHTML = getMinAndSec(state.duration);
+
+    duration.max = endTime;
+    duration.value = startTime;
+  });
+
+  // Toggle play
+  playButton.onclick = function () {
+    player.togglePlay();
+  };
+
+  document.getElementById("prevTrack").onclick = function () {
+    player.previousTrack();
+  };
+
+  document.getElementById("nextTrack").onclick = function () {
+    player.nextTrack();
+  };
+};
 
 // Modifies dom with search results from searchbox
 const search = document.getElementById("song-search");
