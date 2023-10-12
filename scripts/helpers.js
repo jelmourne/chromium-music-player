@@ -67,6 +67,7 @@ async function getCurrentTrack() {
   const response = await fetch(
     "https://api.spotify.com/v1/me/player/currently-playing",
     {
+      mode: "cors",
       headers: {
         Authorization: "Bearer " + accessToken,
       },

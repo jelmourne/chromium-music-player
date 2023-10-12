@@ -17,7 +17,7 @@
     <div class="flex flex-row bg-slate-700 justify-between">
       <div class="mx-5">
         <div
-          class="rounded-3xl bg-white px-3 border-[1px] border-gray-500 border-solid"
+          class="rounded-3xl bg-white px-3 border-[1px] border-gray-500 border-solid w-52"
         >
           <i class="fa-solid fa-magnifying-glass pe-2"></i>
           <input
@@ -94,25 +94,22 @@
         class="border border-solid border-gray-300 p-30 rounded-lg shadow-lg p-5"
       >
         <div class="flex items-center flex-col justify-center">
-          <img
-            class="w-1/2 aspect-sqaure"
-            src="https://media.architecturaldigest.com/photos/5890e0a43926c56a61e9a046/master/w_1920%2Cc_limit/Artist-Designed%2520Album%2520Covers%25202.jpg"
-          />
+          <img id="current-song-img" class="w-1/2 aspect-sqaure" />
 
-          <div class="text-2xl mt-5">Track Name</div>
-          <div class="text-xl mt-2">Track Artist</div>
+          <div class="text-2xl mt-5" id="current-song-name">Track Name</div>
+          <div class="text-xl mt-2" id="current-song-artist">Track Artist</div>
         </div>
 
         <div class="flex items-center justify-center mt-5">
           <div class="px-2">00:00</div>
-          <input
-            type="range"
-            min="1"
+          <meter
+            id="song-duration"
+            min="0"
             max="100"
             value="0"
             class="seek_slider w-3/4"
             onchange="seekTo()"
-          />
+          ></meter>
           <div class="px-2">00:00</div>
         </div>
 
@@ -126,18 +123,20 @@
 
           <div
             class="prev-track p-3 opacity-80 hover:opacity-100 cursor-pointer"
-            onclick="prevTrack()"
+            id="prevTrack"
           >
             <i class="fa fa-step-backward text-2xl"></i>
           </div>
 
-          <div class="playpause-track p-3 cursor-pointer" id="togglePlay">
-            <i class="fa fa-play-circle text-5xl"></i>
+          <div
+            class="playpause-track p-3 cursor-pointer active:scale-90 transition-all"
+          >
+            <i id="togglePlay" class="fa fa-play-circle text-5xl"></i>
           </div>
 
           <div
             class="next-track p-3 opacity-80 hover:opacity-100 cursor-pointer"
-            onclick="nextTrack()"
+            id="nextTrack"
           >
             <i class="fa fa-step-forward text-2xl"></i>
           </div>
@@ -168,7 +167,7 @@
           getOAuthToken: (cb) => {
             cb(token);
           },
-          volume: 1,
+          volume: 0.3,
         });
 
         player.addListener("ready", ({ device_id }) => {
@@ -211,9 +210,23 @@
           }
         });
 
+        player.on("player_state_changed", (state) => {});
+
         // Toggle play
-        document.getElementById("togglePlay").onclick = function () {
+        const playButton = document.getElementById("togglePlay");
+
+        playButton.onclick = function () {
           player.togglePlay();
+          playButton.classList.toggle("fa-solid");
+          playButton.classList.toggle("fa-circle-pause");
+        };
+
+        document.getElementById("prevTrack").onclick = function () {
+          player.previousTrack();
+        };
+
+        document.getElementById("nextTrack").onclick = function () {
+          player.nextTrack();
         };
       };
 

@@ -36,7 +36,6 @@ id="profile-button"
 const profile = await getProfile();
 const playlist = await getUserPlaylist();
 const currentSong = await getCurrentTrack();
-console.log(currentSong);
 
 // Loading dropdown scripts
 var tag = document.createElement("script");
@@ -44,6 +43,7 @@ tag.src = "https://unpkg.com/flowbite@1.5.1/dist/flowbite.js";
 document.getElementsByTagName("head")[0].appendChild(tag);
 
 // DOM Manipulation Section
+
 try {
   document
     .getElementById("login-button")
@@ -51,6 +51,18 @@ try {
 } catch (ex) {
   alert(ex);
 }
+
+document.getElementById("current-song-img").src =
+  currentSong.item.album.images[0].url;
+
+document.getElementById("current-song-name").innerHTML = currentSong.item.name;
+
+document.getElementById("current-song-artist").innerHTML =
+  currentSong.item.artists[0].name;
+
+const duration = document.getElementById("song-duration");
+duration.max = currentSong.item.duration_ms;
+duration.value = currentSong.progress_ms;
 
 document.getElementById("profile-name").innerHTML =
   "Hi, " + profile.display_name;
