@@ -1,3 +1,9 @@
 @import "tailwindcss/base";
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
+
+@layer base {
+  meter::-webkit-meter-optimum-value {
+    background: rgb(34 197 94);
+  }
+}

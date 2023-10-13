@@ -1,143 +1,191 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Spotify Chrome Extension</title>
+    <script type="module" src="./scripts/app.js"></script>
+    <link rel="stylesheet" href="./styles/style.css" />
+    <script
+      src="https://kit.fontawesome.com/e2de3a3f6a.js"
+      crossorigin="anonymous"
+    ></script>
+  </head>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Spotify Chrome Extension</title>
-  <script type="module" src="./scripts/app.js"></script>
-  <link rel="stylesheet" href="./styles/style.css" />
-  <script src="https://kit.fontawesome.com/e2de3a3f6a.js" crossorigin="anonymous"></script>
-</head>
+  <body>
+    <!-- Player Container -->
+    <div class="flex justify-center">
+      <div
+        class="border border-solid border-gray-300 p-30 rounded-lg shadow-lg p-5"
+      >
+        <div class="flex flex-row justify-between">
+          <!-- Nav Bar -->
+          <div class="mx-5">
+            <div
+              class="rounded-3xl bg-white px-3 border-[1px] border-gray-500 border-solid w-40"
+            >
+              <i class="fa-solid fa-magnifying-glass pe-2"></i>
+              <input
+                class="outline-none w-24"
+                placeholder="Search"
+                id="song-search"
+              />
+            </div>
+            <div id="search-result" class="absolute z-50"></div>
+          </div>
+          <div class="mx-5">
+            <button><i class="fa-solid fa-moon mx-3"></i></button>
 
-<body>
-  <!-- Nav Bar -->
-  <div class="flex flex-row bg-slate-700 justify-between">
-    <div class="mx-5">
-      <div class="rounded-3xl bg-white px-3 border-[1px] border-gray-500 border-solid">
-        <i class="fa-solid fa-magnifying-glass pe-2"></i>
-        <input class="outline-none w-24" placeholder="Search" id="song-search" />
-      </div>
-      <div id="search-result"></div>
-    </div>
-    <div class="mx-5">
-    <button><i class="fa-solid fa-moon mx-3"></i></button>
+            <!-- Toggle for playlist-->
+            <button
+              id="playlist-toggle"
+              data-dropdown-toggle="playlist-dropdown"
+              type="button"
+            >
+              <i class="fa-solid fa-music mx-3"></i>
+            </button>
+            <div
+              id="playlist-dropdown"
+              class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg w-auto shadow-xl overflow-auto h-72"
+            ></div>
 
-      <!-- Toggle for playlist-->
-      <button id="playlist-toggle" data-dropdown-toggle="playlist-dropdown" type="button">
-        <i class="fa-solid fa-music mx-3"></i>
-      </button>
-      <div id="playlist-dropdown" class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg w-auto shadow-xl">
-      </div>
+            <!-- Toggle for account page -->
+            <button
+              id="profile"
+              data-dropdown-toggle="account-dropdown"
+              type="button"
+            >
+              <i class="fa-solid fa-user mx-3"></i>
+            </button>
+            <div
+              id="account-dropdown"
+              class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg w-44 shadow-xl"
+            >
+              <ul
+                class="py-2 text-sm text-gray-700 text-center"
+                aria-labelledby="profile"
+              >
+                <button id="login-button" type="button">
+                  <li class="block px-4 py-2">Login</li>
+                </button>
+                <li class="block px-4 py-2" id="profile-name"></li>
+                <li class="block px-4 py-2" id="profile-followers">
+                  0 Followers
+                </li>
+                <button
+                  id="toggle-favs-btn"
+                  class="hover:bg-green-500 dark:hover:text-white transition-all w-full"
+                >
+                  <li id="toggle-favs-text" class="block px-4 py-2">
+                    Saved Concerts
+                  </li>
+                </button>
+                <li>
+                  <a
+                    id="logout-button"
+                    href="#"
+                    class="block px-4 py-2 text-red-600 hover:bg-green-500 dark:hover:text-white transition-all"
+                    >Sign out</a
+                  >
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
 
-      <!---->
-      <!-- <div id="playlist-results"></div> -->
-      <!-- Toggle for account page -->
-      <button id="profile" data-dropdown-toggle="account-dropdown" type="button">
-        <i class="fa-solid fa-user mx-3"></i>
-      </button>
-      <div id="account-dropdown" class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg w-44 shadow-xl">
-        <ul class="py-2 text-sm text-gray-700 text-center" aria-labelledby="profile">
-          <button id="login-button" type="button">
-            <li class="block px-4 py-2">Login</li>
-          </button>
-          <li class="block px-4 py-2" id="profile-name"></li>
-          <li class="block px-4 py-2" id="profile-followers">0 Followers</li>
-          <button id="toggle-favs-btn" class="hover:bg-green-500 dark:hover:text-white transition-all w-full">
-            <li id="toggle-favs-text" class="block px-4 py-2">Saved Concerts</li>
-          </button>
-          <li>
-            <a id="logout-button" href="#"
-              class="block px-4 py-2 text-red-600 hover:bg-green-500 dark:hover:text-white transition-all">Sign out</a>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </div>
+        <!-- Media controls -->
+        <div class="flex items-center flex-col justify-center">
+          <img id="current-song-img" class="w-1/4 aspect-sqaure m-4" />
+        </div>
 
-  <!-- Player Container -->
-  <div class="absolute top-2/4 left-2/4 -translate-x-2/4 -translate-y-2/4">
-    <div class="border border-solid border-gray-300 p-30 rounded-lg shadow-lg p-5">
-      <div class="flex items-center flex-col justify-center">
-        <img class="w-1/2 aspect-sqaure"
-          src="https://media.architecturaldigest.com/photos/5890e0a43926c56a61e9a046/master/w_1920%2Cc_limit/Artist-Designed%2520Album%2520Covers%25202.jpg" />
+        <div class="flex items-center w-full justify-around">
+          <div class="flex p-3 justify-end w-1/6">
+            <span id="currTime">00:00</span> / <span id="endTime">00:00</span>
+          </div>
+          <div class="flex flex-row items-center justify-center">
+            <div
+              class="p-3 opacity-80 hover:opacity-100 cursor-pointer"
+              id="randomTrack"
+            >
+              <input type="hidden" id="randomValue" value="true" />
+              <i class="fa fa-random text-2xl"></i>
+            </div>
 
-        <div class="text-2xl mt-5">Track Name</div>
-        <div class="text-xl mt-2">Track Artist</div>
-      </div>
+            <div
+              class="p-3 opacity-80 hover:opacity-100 cursor-pointer"
+              id="prevTrack"
+            >
+              <i class="fa fa-step-backward text-2xl"></i>
+            </div>
 
-      <div class="flex items-center justify-center mt-5">
-        <div class="px-2">00:00</div>
-        <input type="range" min="1" max="100" value="0" class="seek_slider w-3/4" onchange="seekTo()" />
-        <div class="px-2">00:00</div>
-      </div>
+            <div class="p-3 cursor-pointer active:scale-90 transition-all">
+              <i id="togglePlay" class="fa fa-play-circle text-5xl"></i>
+            </div>
 
-      <!-- Volume Slider -->
-      <!-- <div class="flex items-center justify-center mt-5">
-          <i class="fa fa-volume-down px-2 cursor-pointer"></i>
-          <input
-            type="range"
-            min="1"
+            <div
+              class="p-3 opacity-80 hover:opacity-100 cursor-pointer"
+              id="nextTrack"
+            >
+              <i class="fa fa-step-forward text-2xl"></i>
+            </div>
+
+            <div
+              class="p-3 opacity-80 hover:opacity-100 cursor-pointer"
+              id="repeatTrack"
+            >
+              <i class="fa fa-repeat text-2xl"></i>
+            </div>
+          </div>
+          <div class="flex items-center justify-center w-1/6">
+            <label class="relative inline-flex items-center cursor-pointer">
+              <input type="checkbox" value="" class="sr-only peer" />
+              <div
+                class="w-9 h-5 bg-gray-200 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-green-500"
+              ></div>
+            </label>
+          </div>
+        </div>
+        <div class="flex flex-col items-center justify-center mb-5">
+          <div class="flex flex-row">
+            <div class="" id="current-song-name">Track Name</div>
+            <span>&nbsp;-&nbsp;</span>
+            <div class="" id="current-song-artist">Track Artist</div>
+          </div>
+          <meter
+            id="song-duration"
+            min="0"
             max="100"
-            value="99"
-            class="w-1/4"
-            onchange="setVolume()"
-          />
-          <i class="fa fa-volume-up px-2 cursor-pointer"></i>
-        </div> -->
-
-      <div class="flex items-center justify-center mt-5">
-        <div class="p-3 opacity-80 hover:opacity-100 cursor-pointer" onclick="randomTrack()">
-          <i class="fa fa-random text-2xl" title="random"></i>
+            value=""
+            class="w-3/4"
+          ></meter>
         </div>
 
-        <div class="prev-track p-3 opacity-80 hover:opacity-100 cursor-pointer" onclick="prevTrack()">
-          <i class="fa fa-step-backward text-2xl"></i>
-        </div>
-
-        <div class="playpause-track p-3 cursor-pointer" onclick="playpauseTrack()">
-          <i class="fa fa-play-circle text-5xl"></i>
-        </div>
-
-        <div class="next-track p-3 opacity-80 hover:opacity-100 cursor-pointer" onclick="nextTrack()">
-          <i class="fa fa-step-forward text-2xl"></i>
-        </div>
-
-        <div class="repeat-track p-3 opacity-80 hover:opacity-100 cursor-pointer" onclick="repeatTrack()">
-          <i class="fa fa-repeat text-2xl" title="repeat"></i>
-        </div>
+        <!-- Events -->
+        <div
+          id="events-container"
+          class="flex flex-col items-center justify-center overflow-auto h-96"
+        ></div>
+        <!------------>
       </div>
-
-      <!-- Events -->
-      <div id="events-container" class="flex flex-col items-center justify-center mt-7 p-3 max-h-96 overflow-auto"></div>
-      <!------------>
-
     </div>
-  </div>
 
-  <!--
-    <script src="https://sdk.scdn.co/spotify-player.js"></script>
     <script>
-      window.onSpotifyWebPlaybackSDKReady = () => {
+      async function playSong(uri) {
         const accessToken = localStorage.getItem("access_token");
-        const player = new Spotify.Player({
-          name: "Chromium Spotify Player",
-          getOAuthToken: (cb) => {
-            cb(accessToken);
-          },
-          volume: 1,
-        });
 
-        player.addListener("ready", ({ deviceId }) => {
-          console.log("Ready with Device ID", deviceId);
-        });
-
-        player.connect();
-      };
+        const response = await fetch(
+          "https://api.spotify.com/v1/me/player/play",
+          {
+            method: "PUT",
+            body: JSON.stringify({
+              uris: [uri],
+            }),
+            headers: new Headers({
+              Authorization: "Bearer " + accessToken,
+            }),
+          }
+        );
+      }
     </script>
-    -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://unpkg.com/flowbite@1.5.1/dist/flowbite.js"></script>
-</body>
-
+  </body>
 </html>

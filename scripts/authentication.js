@@ -36,7 +36,7 @@ function authorization() {
   generateCodeVerify(codeVerify).then((codeChallenge) => {
     let state = generateRandomString(16);
     let scope =
-      "streaming user-modify-playback-state user-read-currently-playing playlist-read-private user-read-email user-read-private";
+      "streaming app-remote-control user-modify-playback-state user-read-currently-playing playlist-read-private user-read-email user-read-private user-read-playback-state";
 
     localStorage.setItem("code_verifier", codeVerify);
 
