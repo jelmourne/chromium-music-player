@@ -8,7 +8,7 @@ import {
   showAllConcerts,
   debounce,
   getMinAndSec,
-  setSuffle,
+  setShuffle,
 } from "./helpers.js";
 
 /* 
@@ -191,7 +191,7 @@ window.onSpotifyWebPlaybackSDKReady = () => {
 const sufflePlay = document.getElementById("randomTrack");
 sufflePlay.addEventListener("click", () => {
   let params = document.getElementById("randomValue");
-  setSuffle(params.value);
+  setShuffle(params.value);
   if (params.value == "true") {
     params.value = "false";
   } else {

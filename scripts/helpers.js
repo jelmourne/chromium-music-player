@@ -61,7 +61,7 @@ async function getUserPlaylist() {
 }
 
 // Set shuffle playback
-async function setSuffle(value) {
+async function setShuffle(value) {
   let accessToken = localStorage.getItem("access_token");
   console.log(value);
 
@@ -274,5 +274,5 @@ export {
   showAllConcerts,
   debounce,
   getMinAndSec,
-  setSuffle,
+  setShuffle,
 };
