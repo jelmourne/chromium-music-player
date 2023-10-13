@@ -60,16 +60,39 @@ async function getUserPlaylist() {
   return await response.json();
 }
 
-// Keeps track of remaining song duration
+// Set shuffle playback
+async function setSuffle(value) {
+  let accessToken = localStorage.getItem("access_token");
+  console.log(value);
 
+  let args = new URLSearchParams({
+    state: value,
+  });
+
+  const response = await fetch(
+    `https://api.spotify.com/v1/me/player/${
+      value == "true" ? "shuffle?" + args : "shuffle"
+    }`,
+    {
+      method: "put",
+      headers: {
+        Authorization: "Bearer " + accessToken,
+      },
+    }
+  ).then((data) => {
+    console.log(data);
+  });
+}
+
+// Set repeat mode
+
+// Keeps track of remaining song duration
 function getMinAndSec(ms) {
   var min = Math.floor(ms / 60000);
   var sec = ((ms % 60000) / 1000).toFixed(0);
 
   return sec == 60 ? min + 1 + ":00" : min + ":" + (sec < 10 ? "0" : "") + sec;
 }
-
-// Plays selected song
 
 // Function that calls ticketmaster API to fetch events in the users country. It takes the user's
 // country as an argument and returns an array of events. The function will loop through the fetched
@@ -251,4 +274,5 @@ export {
   showAllConcerts,
   debounce,
   getMinAndSec,
+  setSuffle,
 };

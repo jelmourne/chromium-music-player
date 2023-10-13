@@ -8,6 +8,7 @@ import {
   showAllConcerts,
   debounce,
   getMinAndSec,
+  setSuffle,
 } from "./helpers.js";
 
 /* 
@@ -73,7 +74,6 @@ document.getElementsByTagName("body")[0].appendChild(tag);
 const playButton = document.getElementById("togglePlay");
 const duration = document.getElementById("song-duration");
 const currentTime = document.getElementById("currTime");
-const currentSong = document.getElementById("current-song-name");
 
 window.onSpotifyWebPlaybackSDKReady = () => {
   const token = localStorage.getItem("access_token");
@@ -122,20 +122,11 @@ window.onSpotifyWebPlaybackSDKReady = () => {
     }
   });
 
-  player.on("player_state_changed", (state) => {
-    var startTime = new Date(state.position);
-    var endTime = new Date(state.duration);
+  var timer;
 
-    let timer = window.setInterval(playbackTimer, 1000);
-
-    if (currentSong.innerHTML != state.track_window.current_track.name) {
-      for (let i = timer; i >= 0; i--) {
-        window.clearInterval(i);
-      }
-      timer = window.setInterval(playbackTimer, 1000);
-    }
-
-    function playbackTimer() {
+  function playbackTimer(start, endTime) {
+    let startTime = start;
+    timer = window.setInterval(() => {
       startTime = new Date(startTime.getTime() + 1000);
       duration.value = startTime;
       currentTime.innerHTML = getMinAndSec(startTime);
@@ -144,6 +135,18 @@ window.onSpotifyWebPlaybackSDKReady = () => {
         duration.value = 0;
         currentTime.innerHTML = "0:00";
       }
+    }, 1000);
+  }
+
+  player.on("player_state_changed", (state) => {
+    let startTime = new Date(state.position);
+    let endTime = new Date(state.duration);
+
+    if (!timer) {
+      playbackTimer(startTime, endTime);
+    } else {
+      clearInterval(timer);
+      playbackTimer(startTime, endTime);
     }
 
     if (!state.paused) {
@@ -153,11 +156,10 @@ window.onSpotifyWebPlaybackSDKReady = () => {
       playButton.classList.remove("fa-circle-pause");
       playButton.classList.remove("fa-solid");
 
-      for (let i = timer; i >= 0; i--) {
-        window.clearInterval(i);
-      }
+      clearInterval(timer);
     }
-    currentSong.innerHTML = state.track_window.current_track.name;
+    document.getElementById("current-song-name").innerHTML =
+      state.track_window.current_track.name;
 
     document.getElementById("current-song-img").src =
       state.track_window.current_track.album.images[0].url;
@@ -179,7 +181,6 @@ window.onSpotifyWebPlaybackSDKReady = () => {
 
   document.getElementById("prevTrack").onclick = function () {
     player.previousTrack();
-    player.togglePlay();
   };
 
   document.getElementById("nextTrack").onclick = function () {
@@ -189,7 +190,13 @@ window.onSpotifyWebPlaybackSDKReady = () => {
 
 const sufflePlay = document.getElementById("randomTrack");
 sufflePlay.addEventListener("click", () => {
-  sufflePlay.firstElementChild.value;
+  let params = document.getElementById("randomValue");
+  setSuffle(params.value);
+  if (params.value == "true") {
+    params.value = "false";
+  } else {
+    params.value = "true";
+  }
 });
 
 // Modifies dom with search results from searchbox
