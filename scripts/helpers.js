@@ -121,16 +121,11 @@ async function getEvents(userCountry, genre) {
         genre: fetchedEvents[i].classifications[0].genre.name,
       };
 
-      if (filteredEvents.length > 1) {
-        if (
-          // Check if name of last concert added is the same as current event
-          filteredEvents[filteredEvents.length - 1].name.includes(
-            event.name.substr(0, 5)
-          )
-        ) {
-          continue;
-        }
+      let substr = event.name.substring(0,5)
+      if (matchConcertName(filteredEvents, substr) || matchConcertName(defaultEvents, substr)) {
+        continue;
       }
+
       for (let i = 0; i < genre.length; i++) {
         if (event.genre.toLowerCase().includes(genre[i])) {
           filteredEvents.push(event);
@@ -148,6 +143,15 @@ async function getEvents(userCountry, genre) {
   } catch (ex) {
     console.log(ex);
   }
+}
+
+function matchConcertName(arr, substr) {
+  for (let i = 0; i < arr.length; i++) {
+    if (arr[i].name.includes(substr)) {
+      return true;
+    }
+  }
+  return false;
 }
 
 // Add concert to favourites (local storage)

@@ -281,4 +281,20 @@ async function filterConcertsByGenre(artistUrl) {
   showAllConcerts(concerts);
 }
 
+const concertToggle = document.getElementById('concertToggle')
+
+concertToggle.addEventListener('change', () => {
+  if (document.getElementById('events-container')) {
+    document.getElementById('events-container').remove();
+  } else {
+    let eventsContainer = document.createElement('div')
+    eventsContainer.id = 'events-container';
+    eventsContainer.className = 'flex flex-col items-center justify-center overflow-auto h-96';
+    console.log(eventsContainer)
+    document.getElementById('player-container').appendChild(eventsContainer);
+    showAllConcerts(concerts)
+  }
+  // document.getElementById('events-container').classList.toggle('invisible')
+});
+
 export { concerts };
