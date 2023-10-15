@@ -9,6 +9,7 @@ import {
   debounce,
   getMinAndSec,
   setSuffle,
+  setRepeat,
 } from "./helpers.js";
 
 /* 
@@ -188,10 +189,23 @@ window.onSpotifyWebPlaybackSDKReady = () => {
   };
 };
 
+// Toggle suffle
 const sufflePlay = document.getElementById("randomTrack");
 sufflePlay.addEventListener("click", () => {
   let params = document.getElementById("randomValue");
   setSuffle(params.value);
+  if (params.value == "true") {
+    params.value = "false";
+  } else {
+    params.value = "true";
+  }
+});
+
+// Set repeat mode
+const repeatTrack = document.getElementById("repeatTrack");
+repeatTrack.addEventListener("click", () => {
+  let params = document.getElementById("randomValue");
+  setRepeat(params.value);
   if (params.value == "true") {
     params.value = "false";
   } else {
@@ -208,6 +222,24 @@ search.addEventListener(
   debounce(() => {
     searchResults.innerHTML = "";
     getSearch(search.value).then((response) => {
+      searchResults.innerHTML = `<hr><li
+        class="flex w-auto bg-white p-2 hover:bg-green-500 hover:text-white transition-all cursor-pointer" onclick="playAlbum('${response.albums.items[0].id}', 'album')"
+      >
+      
+        <div class="flex flex-col">
+          <img
+            class="h-14 aspect-square"
+            src="${response.albums.items[0].images[0].url}"
+            alt="${response.albums.items[0].name}"
+          />
+        </div>
+        <div class="flex flex-col mx-3">
+          <h1 class="text-lg">${response.albums.items[0].name}</h1>
+          <div class="flex flex-row">
+            <p>${response.albums.items[0].artists[0].name}</p>
+          </div>
+        </div>
+      </li>`;
       response.tracks.items.forEach((element) => {
         searchResults.innerHTML += `<hr><li
         class="flex w-auto bg-white p-2 hover:bg-green-500 hover:text-white transition-all cursor-pointer" onclick="playSong('${
@@ -225,9 +257,11 @@ search.addEventListener(
         <div class="flex flex-col mx-3">
           <h1 class="text-lg">${element.name}</h1>
           <div class="flex flex-row">
-            <p class="text-lg me-2">${
-              element.explicit == true ? "&#127348" : ""
-            }</p>
+            ${
+              element.explicit == true
+                ? "<p class='text-lg me-2'>&#127348</p>"
+                : ""
+            }
             <p>${element.artists[0].name}</p>
           </div>
         </div>
@@ -243,7 +277,9 @@ const playlistResult = document.getElementById("playlist-dropdown");
 if (playlist.total != 0) {
   playlist.items.forEach((element) => {
     playlistResult.innerHTML += `<hr><li
-          class="flex w-auto bg-white p-1 hover:bg-green-500 hover:text-white transition-all cursor-pointer"
+          class="flex w-auto bg-white p-1 hover:bg-green-500 hover:text-white transition-all cursor-pointer" onclick="playAlbum('${
+            response.albums.items[0].id
+          }', 'playlists')
         >
           <div class="flex flex-col">
             <img
