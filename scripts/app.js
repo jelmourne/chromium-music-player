@@ -1,15 +1,16 @@
-import { authorization } from "./authentication.js";
+import { authorization } from './authentication.js';
 import {
   getProfile,
   getSearch,
   getEvents,
   getUserPlaylist,
+  getArtistGenre,
   showSavedConcerts,
   showAllConcerts,
   debounce,
   getMinAndSec,
-  setSuffle,
-} from "./helpers.js";
+  setShuffle,
+} from './helpers.js';
 
 /* 
 // Check if user is logged in and change profile icon
@@ -38,87 +39,88 @@ const profile = await getProfile();
 const playlist = await getUserPlaylist();
 
 // Loading dropdown scripts
-var tag = document.createElement("script");
-tag.src = "https://unpkg.com/flowbite@1.5.1/dist/flowbite.js";
-document.getElementsByTagName("head")[0].appendChild(tag);
+var tag = document.createElement('script');
+tag.src = 'https://unpkg.com/flowbite@1.5.1/dist/flowbite.js';
+document.getElementsByTagName('head')[0].appendChild(tag);
 
 // DOM Manipulation Section
 try {
   document
-    .getElementById("login-button")
-    .addEventListener("click", authorization);
+    .getElementById('login-button')
+    .addEventListener('click', authorization);
 } catch (ex) {
   alert(ex);
 }
 
-document.getElementById("profile-name").innerHTML =
-  "Hi, " + profile.display_name;
+document.getElementById('profile-name').innerHTML =
+  'Hi, ' + profile.display_name;
 
-document.getElementById("profile-followers").innerHTML =
-  profile.followers.total + " Followers";
+document.getElementById('profile-followers').innerHTML =
+  profile.followers.total + ' Followers';
 
-document.getElementById("toggle-favs-btn").addEventListener("click", () => {
+document.getElementById('toggle-favs-btn').addEventListener('click', () => {
   showSavedConcerts();
 });
 
-document.getElementById("logout-button").addEventListener("click", () => {
-  localStorage.removeItem("access_token");
+document.getElementById('logout-button').addEventListener('click', () => {
+  localStorage.removeItem('access_token');
   location.reload();
 });
 
 // Spotify player
-var tag = document.createElement("script");
-tag.src = "https://sdk.scdn.co/spotify-player.js";
-document.getElementsByTagName("body")[0].appendChild(tag);
+var tag = document.createElement('script');
+tag.src = 'https://sdk.scdn.co/spotify-player.js';
+document.getElementsByTagName('body')[0].appendChild(tag);
 
-const playButton = document.getElementById("togglePlay");
-const duration = document.getElementById("song-duration");
-const currentTime = document.getElementById("currTime");
+const playButton = document.getElementById('togglePlay');
+const duration = document.getElementById('song-duration');
+const currentTime = document.getElementById('currTime');
 
+// Initializing Web Playback SDK with event listeners
+let genre;
 window.onSpotifyWebPlaybackSDKReady = () => {
-  const token = localStorage.getItem("access_token");
-
+  const token = localStorage.getItem('access_token');
   const player = new Spotify.Player({
-    name: "Web Playback SDK Quick Start Player",
+    name: 'Chrome Extension',
     volume: 0.3,
     getOAuthToken: (cb) => {
       cb(token);
     },
   });
 
-  player.addListener("ready", ({ device_id }) => {
-    const connect_to_device = () => {
-      const accessToken = localStorage.getItem("access_token");
-      console.log("Changing to device");
-      let changeDevice = fetch("https://api.spotify.com/v1/me/player", {
-        method: "PUT",
-        body: JSON.stringify({
-          device_ids: [device_id],
-          play: false,
-        }),
-        headers: new Headers({
-          Authorization: "Bearer " + accessToken,
-        }),
-      });
-    };
-    connect_to_device();
+  player.addListener('ready', ({ device_id }) => {
+    // const connect_to_device = () => {
+    const accessToken = localStorage.getItem('access_token');
+    console.log('Changing to device');
+    let changeDevice = fetch('https://api.spotify.com/v1/me/player', {
+      method: 'PUT',
+      body: JSON.stringify({
+        device_ids: [device_id],
+        play: false,
+      }),
+      headers: new Headers({
+        Authorization: 'Bearer ' + accessToken,
+      }),
+    });
+  });
+  // connect_to_device();
+  //});
+
+  player.addListener('not_ready', ({ device_id }) => {
+    console.log('Device ID has gone offline', device_id);
   });
 
-  player.addListener("not_ready", ({ device_id }) => {
-    console.log("Device ID has gone offline", device_id);
-  });
-
-  player.addListener("authentication_error", ({ message }) => {
+  player.addListener('authentication_error', ({ message }) => {
     console.error(message);
   });
 
-  player.addListener("account_error", ({ message }) => {
+  player.addListener('account_error', ({ message }) => {
     console.error(message);
   });
 
   player.connect().then((success) => {
     if (success) {
-      console.log("The Web Playback SDK successfully connected to Spotify!");
+      console.log('The Web Playback SDK successfully connected to Spotify!');
     }
   });
 
@@ -133,12 +135,12 @@ window.onSpotifyWebPlaybackSDKReady = () => {
       if (startTime >= endTime) {
         clearTimeout(timer);
         duration.value = 0;
-        currentTime.innerHTML = "0:00";
+        currentTime.innerHTML = '0:00';
       }
     }, 1000);
   }
 
-  player.on("player_state_changed", (state) => {
+  player.on('player_state_changed', async (state) => {
     let startTime = new Date(state.position);
     let endTime = new Date(state.duration);
 
@@ -150,28 +152,31 @@ window.onSpotifyWebPlaybackSDKReady = () => {
     }
 
     if (!state.paused) {
-      playButton.classList.add("fa-circle-pause");
-      playButton.classList.add("fa-solid");
+      playButton.classList.add('fa-circle-pause');
+      playButton.classList.add('fa-solid');
     } else {
-      playButton.classList.remove("fa-circle-pause");
-      playButton.classList.remove("fa-solid");
+      playButton.classList.remove('fa-circle-pause');
+      playButton.classList.remove('fa-solid');
 
       clearInterval(timer);
     }
-    document.getElementById("current-song-name").innerHTML =
+
+    document.getElementById('current-song-name').innerHTML =
       state.track_window.current_track.name;
 
-    document.getElementById("current-song-img").src =
+    document.getElementById('current-song-img').src =
       state.track_window.current_track.album.images[0].url;
 
-    document.getElementById("current-song-artist").innerHTML =
+    document.getElementById('current-song-artist').innerHTML =
       state.track_window.current_track.artists[0].name;
 
     currentTime.innerHTML = getMinAndSec(state.position);
-    document.getElementById("endTime").innerHTML = getMinAndSec(state.duration);
+    document.getElementById('endTime').innerHTML = getMinAndSec(state.duration);
 
     duration.max = endTime;
     duration.value = startTime;
+
+    filterConcertsByGenre(state.track_window.current_track.artists[0].url);
   });
 
   // Toggle play
@@ -179,34 +184,34 @@ window.onSpotifyWebPlaybackSDKReady = () => {
     player.togglePlay();
   };
 
-  document.getElementById("prevTrack").onclick = function () {
+  document.getElementById('prevTrack').onclick = function () {
     player.previousTrack();
   };
 
-  document.getElementById("nextTrack").onclick = function () {
+  document.getElementById('nextTrack').onclick = function () {
     player.nextTrack();
   };
 };
 
-const sufflePlay = document.getElementById("randomTrack");
-sufflePlay.addEventListener("click", () => {
-  let params = document.getElementById("randomValue");
-  setSuffle(params.value);
-  if (params.value == "true") {
-    params.value = "false";
+const shufflePlay = document.getElementById('randomTrack');
+shufflePlay.addEventListener('click', () => {
+  let params = document.getElementById('randomValue');
+  setShuffle(params.value);
+  if (params.value == 'true') {
+    params.value = 'false';
   } else {
-    params.value = "true";
+    params.value = 'true';
   }
 });
 
 // Modifies dom with search results from searchbox
-const search = document.getElementById("song-search");
-const searchResults = document.getElementById("search-result");
+const search = document.getElementById('song-search');
+const searchResults = document.getElementById('search-result');
 
 search.addEventListener(
-  "input",
+  'input',
   debounce(() => {
-    searchResults.innerHTML = "";
+    searchResults.innerHTML = '';
     getSearch(search.value).then((response) => {
       response.tracks.items.forEach((element) => {
         searchResults.innerHTML += `<hr><li
@@ -226,7 +231,7 @@ search.addEventListener(
           <h1 class="text-lg">${element.name}</h1>
           <div class="flex flex-row">
             <p class="text-lg me-2">${
-              element.explicit == true ? "&#127348" : ""
+              element.explicit == true ? '&#127348' : ''
             }</p>
             <p>${element.artists[0].name}</p>
           </div>
@@ -238,7 +243,7 @@ search.addEventListener(
 );
 
 // Gets all users playlist and renders them on the page
-const playlistResult = document.getElementById("playlist-dropdown");
+const playlistResult = document.getElementById('playlist-dropdown');
 
 if (playlist.total != 0) {
   playlist.items.forEach((element) => {
@@ -256,8 +261,8 @@ if (playlist.total != 0) {
             <div class="flex flex-row">
               <p>Tracks: ${element.tracks.total}</p>
               <p>&nbsp ${
-                element.owner.display_name == "undefined"
-                  ? ""
+                element.owner.display_name == 'undefined'
+                  ? ''
                   : element.owner.display_name
               }</p>
             </div>
@@ -269,7 +274,27 @@ if (playlist.total != 0) {
     "<li class='flex w-auto bg-white p-1 m-6'>No Playlist Available</li>";
 }
 
-let concertsArr = await getEvents(profile.country);
-showAllConcerts(concertsArr);
+let concerts;
+async function filterConcertsByGenre(artistUrl) {
+  genre = await getArtistGenre(artistUrl);
+  concerts = await getEvents(profile.country, genre);
+  showAllConcerts(concerts);
+}
 
-export { concertsArr };
+const concertToggle = document.getElementById('concertToggle')
+
+concertToggle.addEventListener('change', () => {
+  if (document.getElementById('events-container')) {
+    document.getElementById('events-container').remove();
+  } else {
+    let eventsContainer = document.createElement('div')
+    eventsContainer.id = 'events-container';
+    eventsContainer.className = 'flex flex-col items-center justify-center overflow-auto h-96';
+    console.log(eventsContainer)
+    document.getElementById('player-container').appendChild(eventsContainer);
+    showAllConcerts(concerts)
+  }
+  // document.getElementById('events-container').classList.toggle('invisible')
+});
+
+export { concerts };
