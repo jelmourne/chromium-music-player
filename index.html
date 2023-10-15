@@ -15,7 +15,7 @@
   <body>
     <!-- Player Container -->
     <div class="flex justify-center">
-      <div
+      <div id="player-container"
         class="border border-solid border-gray-300 p-30 rounded-lg shadow-lg p-5"
       >
         <div class="flex flex-row justify-between">
@@ -139,7 +139,7 @@
           </div>
           <div class="flex items-center justify-center w-1/6">
             <label class="relative inline-flex items-center cursor-pointer">
-              <input type="checkbox" value="" class="sr-only peer" />
+              <input id="concertToggle" type="checkbox" value="" class="sr-only peer" checked />
               <div
                 class="w-9 h-5 bg-gray-200 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-green-500"
               ></div>
@@ -172,12 +172,12 @@
 
     <script>
       async function playSong(uri) {
-        const accessToken = localStorage.getItem("access_token");
+        const accessToken = localStorage.getItem('access_token');
 
         const response = await fetch(
-          "https://api.spotify.com/v1/me/player/play",
+          'https://api.spotify.com/v1/me/player/play',
           {
-            method: "PUT",
+            method: 'PUT',
             body: JSON.stringify({
               offset: {
                 position: 0,
@@ -185,7 +185,7 @@
               uris: uri,
             }),
             headers: new Headers({
-              Authorization: "Bearer " + accessToken,
+              Authorization: 'Bearer ' + accessToken,
             }),
           }
         ).then((data) => console.log(data));
