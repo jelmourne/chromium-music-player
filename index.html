@@ -133,6 +133,7 @@
               class="p-3 opacity-80 hover:opacity-100 cursor-pointer"
               id="repeatTrack"
             >
+              <input type="hidden" id="repeatValue" value="false" />
               <i class="fa fa-repeat text-2xl"></i>
             </div>
           </div>
@@ -178,13 +179,47 @@
           {
             method: 'PUT',
             body: JSON.stringify({
-              uris: [uri],
+              offset: {
+                position: 0,
+              },
+              uris: uri,
             }),
             headers: new Headers({
               Authorization: 'Bearer ' + accessToken,
             }),
           }
+        ).then((data) => console.log(data));
+      }
+
+      // Get playlist tracks
+      async function getTracks(playlistId, type) {
+        const accessToken = localStorage.getItem("access_token");
+
+        const response = await fetch(
+          `https://api.spotify.com/v1/${
+            type == "album" ? "albums" : "playlists"
+          }/${playlistId}/tracks`,
+          {
+            headers: {
+              Authorization: "Bearer " + accessToken,
+            },
+          }
         );
+
+        return await response.json();
+      }
+
+      async function playAlbum(playlistId, type) {
+        let uri = [];
+        const accessToken = localStorage.getItem("access_token");
+
+        const tracks = await getTracks(playlistId, type);
+
+        tracks.items.forEach((element) => {
+          uri.push(element.uri);
+        });
+
+        await playSong(uri);
       }
     </script>
   </body>

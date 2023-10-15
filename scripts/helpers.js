@@ -31,8 +31,8 @@ async function getSearch(Query) {
 
   let args = new URLSearchParams({
     q: Query,
-    type: 'track',
-    limit: 5,
+    type: ["album", "track"],
+    limit: 4,
   });
 
   const response = await fetch(`https://api.spotify.com/v1/search?${args}`, {
@@ -62,8 +62,7 @@ async function getUserPlaylist() {
 
 // Set shuffle playback
 async function setShuffle(value) {
-  let accessToken = localStorage.getItem('access_token');
-  console.log(value);
+  let accessToken = localStorage.getItem("access_token");
 
   let args = new URLSearchParams({
     state: value,
@@ -79,12 +78,27 @@ async function setShuffle(value) {
         Authorization: 'Bearer ' + accessToken,
       },
     }
-  ).then((data) => {
-    console.log(data);
-  });
+  );
 }
 
 // Set repeat mode
+async function setRepeat(value) {
+  let accessToken = localStorage.getItem("access_token");
+
+  let args = new URLSearchParams({
+    state: value == "false" ? "off" : "track",
+  });
+
+  const response = await fetch(
+    `https://api.spotify.com/v1/me/player/repeat?${args}`,
+    {
+      method: "put",
+      headers: {
+        Authorization: "Bearer " + accessToken,
+      },
+    }
+  ).then((data) => console.log(data));
+}
 
 // Keeps track of remaining song duration
 function getMinAndSec(ms) {
@@ -299,7 +313,8 @@ export {
   getArtistGenre,
   showSavedConcerts,
   showAllConcerts,
+  setShuffle,
+  setRepeat,
   debounce,
   getMinAndSec,
-  setShuffle,
 };
