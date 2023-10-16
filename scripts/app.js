@@ -83,10 +83,10 @@ window.onSpotifyWebPlaybackSDKReady = () => {
   const token = localStorage.getItem("access_token");
   const player = new Spotify.Player({
     name: "Chrome Extension",
-    volume: 0.3,
     getOAuthToken: (cb) => {
       cb(token);
     },
+    volume: 0.2,
   });
 
   player.addListener("ready", ({ device_id }) => {

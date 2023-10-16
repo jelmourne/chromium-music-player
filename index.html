@@ -181,6 +181,10 @@
       async function playSong(uri) {
         const accessToken = localStorage.getItem("access_token");
 
+        if (!Array.isArray(uri)) {
+          uri = [uri];
+        }
+
         const response = await fetch(
           "https://api.spotify.com/v1/me/player/play",
           {
@@ -195,7 +199,7 @@
               Authorization: "Bearer " + accessToken,
             }),
           }
-        ).then((data) => console.log(data));
+        );
       }
 
       // Get playlist tracks
