@@ -53,6 +53,22 @@ try {
   alert(ex);
 }
 
+if (window.matchMedia("(prefers-color-scheme: dark)").matches === true) {
+  localStorage.setItem("theme", "dark");
+} else {
+  localStorage.setItem("theme", "light");
+}
+
+document.getElementById("darkToggle").addEventListener("click", () => {
+  if (localStorage.getItem("theme") == "dark") {
+    document.documentElement.classList.remove("dark");
+    localStorage.setItem("theme", "light");
+  } else {
+    document.documentElement.classList.add("dark");
+    localStorage.setItem("theme", "dark");
+  }
+});
+
 document.getElementById("profile-name").innerHTML =
   "Hi, " + profile.display_name;
 
@@ -227,8 +243,8 @@ search.addEventListener(
   debounce(() => {
     searchResults.innerHTML = "";
     getSearch(search.value).then((response) => {
-      searchResults.innerHTML = `<hr><li
-        class="flex w-auto bg-white p-2 hover:bg-green-500 hover:text-white transition-all cursor-pointer" onclick="playAlbum('${response.albums.items[0].id}', 'album')"
+      searchResults.innerHTML = `<li
+        class="flex w-auto bg-white p-2 hover:bg-green-500 dark:hover:bg-green-500 dark:bg-neutral-900 dark:text-white hover:text-white transition-all cursor-pointer" onclick="playAlbum('${response.albums.items[0].id}', 'album')"
       >
         <div class="flex flex-col">
           <img
@@ -243,10 +259,10 @@ search.addEventListener(
             <p>${response.albums.items[0].artists[0].name}</p>
           </div>
         </div>
-      </li>`;
+      </li><hr>`;
       response.tracks.items.forEach((element) => {
-        searchResults.innerHTML += `<hr><li
-        class="flex w-auto bg-white p-2 hover:bg-green-500 hover:text-white transition-all cursor-pointer" onclick="playSong('${
+        searchResults.innerHTML += `<li
+        class="flex w-auto bg-white p-2 hover:bg-green-500 dark:hover:bg-green-500 dark:bg-neutral-900 dark:text-white hover:text-white transition-all cursor-pointer" onclick="playSong('${
           element.uri
         }')"
       >
@@ -268,7 +284,7 @@ search.addEventListener(
             <p>${element.artists[0].name}</p>
           </div>
         </div>
-      </li>`;
+      </li><hr>`;
       });
     });
   }, 300)
@@ -279,8 +295,8 @@ const playlistResult = document.getElementById("playlist-dropdown");
 
 if (parseInt(playlist.total) != 0) {
   playlist.items.forEach((element) => {
-    playlistResult.innerHTML += `<hr><li
-          class="flex w-auto bg-white p-1 hover:bg-green-500 hover:text-white transition-all cursor-pointer" onclick="playAlbum('${
+    playlistResult.innerHTML += `<li
+          class="flex w-auto bg-white p-1 hover:bg-green-500 dark:hover:bg-green-500 hover:text-white dark:bg-neutral-900 dark:text-white transition-all cursor-pointer" onclick="playAlbum('${
             element.id
           }', 'playlists')"
         >
@@ -301,7 +317,7 @@ if (parseInt(playlist.total) != 0) {
               }</p>
             </div>
           </div>
-        </li>`;
+        </li><hr>`;
   });
 } else {
   playlistResult.innerHTML =

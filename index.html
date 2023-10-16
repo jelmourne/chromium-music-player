@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -17,17 +17,17 @@
     <div class="flex justify-center">
       <div
         id="player-container"
-        class="border border-solid border-gray-300 p-30 rounded-lg shadow-lg p-5"
+        class="border border-solid border-gray-300 bg-white dark:bg-neutral-900 p-30 rounded-lg shadow-lg p-5"
       >
         <div class="flex flex-row justify-between">
           <!-- Nav Bar -->
           <div class="mx-5">
             <div
-              class="rounded-3xl bg-white px-3 border-[1px] border-gray-500 border-solid w-40"
+              class="rounded-3xl bg-white dark:bg-neutral-400 dark:bg-opacity-60 px-3 border-[1px] border-gray-500 border-solid w-40"
             >
-              <i class="fa-solid fa-magnifying-glass pe-2"></i>
+              <i class="fa-solid fa-magnifying-glass pe-2 dark:text-white"></i>
               <input
-                class="outline-none w-24"
+                class="outline-none w-24 dark:bg-transparent dark:text-white"
                 placeholder="Search"
                 id="song-search"
               />
@@ -35,7 +35,9 @@
             <div id="search-result" class="absolute z-50"></div>
           </div>
           <div class="mx-5">
-            <button><i class="fa-solid fa-moon mx-3"></i></button>
+            <button id="darkToggle">
+              <i class="fa-solid fa-moon mx-3 dark:text-white"></i>
+            </button>
 
             <!-- Toggle for playlist-->
             <button
@@ -43,11 +45,11 @@
               data-dropdown-toggle="playlist-dropdown"
               type="button"
             >
-              <i class="fa-solid fa-music mx-3"></i>
+              <i class="fa-solid fa-music mx-3 dark:text-white"></i>
             </button>
             <div
               id="playlist-dropdown"
-              class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg w-auto shadow-xl overflow-auto h-72"
+              class="z-10 hidden bg-white dark:bg-neutral-900 divide-y divide-gray-100 rounded-lg w-auto shadow-xl overflow-auto h-72"
             ></div>
 
             <!-- Toggle for account page -->
@@ -56,14 +58,14 @@
               data-dropdown-toggle="account-dropdown"
               type="button"
             >
-              <i class="fa-solid fa-user mx-3"></i>
+              <i class="fa-solid fa-user mx-3 dark:text-white"></i>
             </button>
             <div
               id="account-dropdown"
-              class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg w-44 shadow-xl"
+              class="z-10 hidden bg-white dark:bg-neutral-900 divide-y divide-gray-100 rounded-lg w-44 shadow-xl"
             >
               <ul
-                class="py-2 text-sm text-gray-700 text-center"
+                class="py-2 text-sm text-gray-700 dark:text-white text-center"
                 aria-labelledby="profile"
               >
                 <button id="login-button" type="button">
@@ -75,7 +77,7 @@
                 </li>
                 <button
                   id="toggle-favs-btn"
-                  class="hover:bg-green-500 dark:hover:text-white transition-all w-full"
+                  class="hover:bg-green-500 hover:text-white transition-all w-full"
                 >
                   <li id="toggle-favs-text" class="block px-4 py-2">
                     Saved Concerts
@@ -85,7 +87,7 @@
                   <a
                     id="logout-button"
                     href="#"
-                    class="block px-4 py-2 text-red-600 hover:bg-green-500 dark:hover:text-white transition-all"
+                    class="block px-4 py-2 text-red-600 hover:bg-green-500 hover:text-white transition-all"
                     >Sign out</a
                   >
                 </li>
@@ -100,7 +102,7 @@
         </div>
 
         <div class="flex items-center w-full justify-around">
-          <div class="flex p-3 justify-end w-1/6">
+          <div class="flex p-3 justify-end w-1/6 dark:text-white">
             <span id="currTime">00:00</span> / <span id="endTime">00:00</span>
           </div>
           <div class="flex flex-row items-center justify-center">
@@ -109,25 +111,28 @@
               id="randomTrack"
             >
               <input type="hidden" id="randomValue" value="true" />
-              <i class="fa fa-random text-2xl"></i>
+              <i class="fa fa-random text-2xl dark:text-white"></i>
             </div>
 
             <div
               class="p-3 opacity-80 hover:opacity-100 cursor-pointer"
               id="prevTrack"
             >
-              <i class="fa fa-step-backward text-2xl"></i>
+              <i class="fa fa-step-backward text-2xl dark:text-white"></i>
             </div>
 
             <div class="p-3 cursor-pointer active:scale-90 transition-all">
-              <i id="togglePlay" class="fa fa-play-circle text-5xl"></i>
+              <i
+                id="togglePlay"
+                class="fa fa-play-circle text-5xl dark:text-white"
+              ></i>
             </div>
 
             <div
               class="p-3 opacity-80 hover:opacity-100 cursor-pointer"
               id="nextTrack"
             >
-              <i class="fa fa-step-forward text-2xl"></i>
+              <i class="fa fa-step-forward text-2xl dark:text-white"></i>
             </div>
 
             <div
@@ -135,7 +140,7 @@
               id="repeatTrack"
             >
               <input type="hidden" id="repeatValue" value="false" />
-              <i class="fa fa-repeat text-2xl"></i>
+              <i class="fa fa-repeat text-2xl dark:text-white"></i>
             </div>
           </div>
           <div class="flex items-center justify-center w-1/6">
@@ -155,9 +160,11 @@
         </div>
         <div class="flex flex-col items-center justify-center mb-5">
           <div class="flex flex-row">
-            <div class="" id="current-song-name">Track Name</div>
-            <span>&nbsp;-&nbsp;</span>
-            <div class="" id="current-song-artist">Track Artist</div>
+            <div class="dark:text-white" id="current-song-name">Track Name</div>
+            <span class="dark:text-white">&nbsp;-&nbsp;</span>
+            <div class="dark:text-white" id="current-song-artist">
+              Track Artist
+            </div>
           </div>
           <meter
             id="song-duration"
