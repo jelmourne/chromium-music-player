@@ -230,7 +230,6 @@ search.addEventListener(
       searchResults.innerHTML = `<hr><li
         class="flex w-auto bg-white p-2 hover:bg-green-500 hover:text-white transition-all cursor-pointer" onclick="playAlbum('${response.albums.items[0].id}', 'album')"
       >
-      
         <div class="flex flex-col">
           <img
             class="h-14 aspect-square"
@@ -251,7 +250,6 @@ search.addEventListener(
           element.uri
         }')"
       >
-      
         <div class="flex flex-col">
           <img
             class="h-14 aspect-square"
@@ -279,12 +277,12 @@ search.addEventListener(
 // Gets all users playlist and renders them on the page
 const playlistResult = document.getElementById("playlist-dropdown");
 
-if (playlist.total != 0) {
+if (parseInt(playlist.total) != 0) {
   playlist.items.forEach((element) => {
     playlistResult.innerHTML += `<hr><li
           class="flex w-auto bg-white p-1 hover:bg-green-500 hover:text-white transition-all cursor-pointer" onclick="playAlbum('${
-            response.albums.items[0].id
-          }', 'playlists')
+            element.id
+          }', 'playlists')"
         >
           <div class="flex flex-col">
             <img
