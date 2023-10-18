@@ -1,4 +1,4 @@
-import { authorization } from "./authentication.js";
+import { authorization } from './authentication.js';
 import {
   getProfile,
   getSearch,
@@ -11,12 +11,12 @@ import {
   getMinAndSec,
   setShuffle,
   setRepeat,
-} from "./helpers.js";
+} from './helpers.js';
 
 // Check if user is logged in and change profile icon
-const profileSection = document.getElementById("profile");
+const profileSection = document.getElementById('profile');
 
-localStorage.getItem("access_token") == null
+localStorage.getItem('access_token') == null
   ? ((profileSection.innerHTML = `
 <button
 id="login-button"
@@ -24,7 +24,7 @@ type="button"
 >
 <i class="fa-brands fa-spotify mx-3 text-green-500"></i>
 </button>`),
-    profileSection.removeAttribute("data-dropdown-toggle"))
+    profileSection.removeAttribute('data-dropdown-toggle'))
   : (profileSection.innerHTML = `<button
 data-dropdown-toggle="account-dropdown"
 type="button"
@@ -38,112 +38,112 @@ const profile = await getProfile();
 const playlist = await getUserPlaylist();
 
 // Loading dropdown scripts
-var tag = document.createElement("script");
-tag.src = "https://unpkg.com/flowbite@1.5.1/dist/flowbite.js";
-document.getElementsByTagName("head")[0].appendChild(tag);
+var tag = document.createElement('script');
+tag.src = 'https://unpkg.com/flowbite@1.5.1/dist/flowbite.js';
+document.getElementsByTagName('head')[0].appendChild(tag);
 
 // DOM Manipulation Section
 try {
   document
-    .getElementById("login-button")
-    .addEventListener("click", authorization);
+    .getElementById('login-button')
+    .addEventListener('click', authorization);
 } catch (ex) {
   console.log(ex);
 }
 
-if (!localStorage.getItem("access_token")) {
-  document.getElementById("media-container").hidden = true;
-  document.getElementById("search-container").hidden = true;
-  document.getElementById("profile-info").hidden = true;
-  document.getElementById("show-saved-btn").hidden = true;
-  document.getElementById("logout-btn").hidden = true;
+if (!localStorage.getItem('access_token')) {
+  document.getElementById('media-container').hidden = true;
+  document.getElementById('search-container').hidden = true;
+  document.getElementById('profile-info').hidden = true;
+  document.getElementById('show-saved-btn').hidden = true;
+  document.getElementById('logout-btn').hidden = true;
 }
 
-if (window.matchMedia("(prefers-color-scheme: dark)").matches === true) {
-  localStorage.setItem("theme", "dark");
+if (window.matchMedia('(prefers-color-scheme: dark)').matches === true) {
+  localStorage.setItem('theme', 'dark');
 } else {
-  localStorage.setItem("theme", "light");
+  localStorage.setItem('theme', 'light');
 }
 
-document.getElementById("darkToggle").addEventListener("click", () => {
-  if (localStorage.getItem("theme") == "dark") {
-    document.documentElement.classList.remove("dark");
-    localStorage.setItem("theme", "light");
+document.getElementById('darkToggle').addEventListener('click', () => {
+  if (localStorage.getItem('theme') == 'dark') {
+    document.documentElement.classList.remove('dark');
+    localStorage.setItem('theme', 'light');
   } else {
-    document.documentElement.classList.add("dark");
-    localStorage.setItem("theme", "dark");
+    document.documentElement.classList.add('dark');
+    localStorage.setItem('theme', 'dark');
   }
 });
 
-document.getElementById("profile-name").innerHTML =
-  "Hi, " + profile.display_name;
+document.getElementById('profile-name').innerHTML =
+  'Hi, ' + profile.display_name;
 
-document.getElementById("profile-followers").innerHTML =
-  profile.followers.total + " Followers";
+document.getElementById('profile-followers').innerHTML =
+  profile.followers.total + ' Followers';
 
-document.getElementById("show-saved-btn").addEventListener("click", () => {
+document.getElementById('show-saved-btn').addEventListener('click', () => {
   showSavedConcerts();
 });
 
-document.getElementById("logout-button").addEventListener("click", () => {
-  localStorage.removeItem("access_token");
+document.getElementById('logout-button').addEventListener('click', () => {
+  localStorage.removeItem('access_token');
   location.reload();
 });
 
 // Spotify player
-var tag = document.createElement("script");
-tag.src = "https://sdk.scdn.co/spotify-player.js";
-document.getElementsByTagName("body")[0].appendChild(tag);
+var tag = document.createElement('script');
+tag.src = 'https://sdk.scdn.co/spotify-player.js';
+document.getElementsByTagName('body')[0].appendChild(tag);
 
-const playButton = document.getElementById("togglePlay");
-const duration = document.getElementById("song-duration");
-const currentTime = document.getElementById("currTime");
+const playButton = document.getElementById('togglePlay');
+const duration = document.getElementById('song-duration');
+const currentTime = document.getElementById('currTime');
 
 // Initializing Web Playback SDK with event listeners
 let genre;
 window.onSpotifyWebPlaybackSDKReady = () => {
-  const token = localStorage.getItem("access_token");
+  const token = localStorage.getItem('access_token');
   const player = new Spotify.Player({
-    name: "Chrome Extension",
+    name: 'Chrome Extension',
     getOAuthToken: (cb) => {
       cb(token);
     },
     volume: 0.2,
   });
 
-  player.addListener("ready", ({ device_id }) => {
+  player.addListener('ready', ({ device_id }) => {
     // const connect_to_device = () => {
-    const accessToken = localStorage.getItem("access_token");
-    console.log("Changing to device");
-    let changeDevice = fetch("https://api.spotify.com/v1/me/player", {
-      method: "PUT",
+    const accessToken = localStorage.getItem('access_token');
+    console.log('Changing to device');
+    let changeDevice = fetch('https://api.spotify.com/v1/me/player', {
+      method: 'PUT',
       body: JSON.stringify({
         device_ids: [device_id],
         play: false,
       }),
       headers: new Headers({
-        Authorization: "Bearer " + accessToken,
+        Authorization: 'Bearer ' + accessToken,
       }),
     });
   });
   // connect_to_device();
   //});
 
-  player.addListener("not_ready", ({ device_id }) => {
-    console.log("Device ID has gone offline", device_id);
+  player.addListener('not_ready', ({ device_id }) => {
+    console.log('Device ID has gone offline', device_id);
   });
 
-  player.addListener("authentication_error", ({ message }) => {
+  player.addListener('authentication_error', ({ message }) => {
     console.error(message);
   });
 
-  player.addListener("account_error", ({ message }) => {
+  player.addListener('account_error', ({ message }) => {
     console.error(message);
   });
 
   player.connect().then((success) => {
     if (success) {
-      console.log("The Web Playback SDK successfully connected to Spotify!");
+      console.log('The Web Playback SDK successfully connected to Spotify!');
     }
   });
 
@@ -158,12 +158,12 @@ window.onSpotifyWebPlaybackSDKReady = () => {
       if (startTime >= endTime) {
         clearTimeout(timer);
         duration.value = 0;
-        currentTime.innerHTML = "0:00";
+        currentTime.innerHTML = '0:00';
       }
     }, 1000);
   }
 
-  player.on("player_state_changed", async (state) => {
+  player.on('player_state_changed', async (state) => {
     let startTime = new Date(state.position);
     let endTime = new Date(state.duration);
 
@@ -175,29 +175,29 @@ window.onSpotifyWebPlaybackSDKReady = () => {
     }
 
     if (!state.paused) {
-      playButton.classList.add("fa-circle-pause");
-      playButton.classList.add("fa-solid");
+      playButton.classList.add('fa-circle-pause');
+      playButton.classList.add('fa-solid');
     } else {
-      playButton.classList.remove("fa-circle-pause");
-      playButton.classList.remove("fa-solid");
+      playButton.classList.remove('fa-circle-pause');
+      playButton.classList.remove('fa-solid');
 
       clearInterval(timer);
     }
 
     let currentTrackName = state.track_window.current_track.name;
-    document.getElementById("current-song-name").innerHTML =
-      currentTrackName.length > 40
-        ? currentTrackName.substring(0, 49) + "..."
+    document.getElementById('current-song-name').innerHTML =
+      currentTrackName.length > 30
+        ? currentTrackName.substring(0, 29) + '...'
         : currentTrackName;
 
-    document.getElementById("current-song-img").src =
+    document.getElementById('current-song-img').src =
       state.track_window.current_track.album.images[0].url;
 
-    document.getElementById("current-song-artist").innerHTML =
+    document.getElementById('current-song-artist').innerHTML =
       state.track_window.current_track.artists[0].name;
 
     currentTime.innerHTML = getMinAndSec(state.position);
-    document.getElementById("endTime").innerHTML = getMinAndSec(state.duration);
+    document.getElementById('endTime').innerHTML = getMinAndSec(state.duration);
 
     duration.max = endTime;
     duration.value = startTime;
@@ -210,47 +210,47 @@ window.onSpotifyWebPlaybackSDKReady = () => {
     player.togglePlay();
   };
 
-  document.getElementById("prevTrack").onclick = function () {
+  document.getElementById('prevTrack').onclick = function () {
     player.previousTrack();
   };
 
-  document.getElementById("nextTrack").onclick = function () {
+  document.getElementById('nextTrack').onclick = function () {
     player.nextTrack();
   };
 };
 
 // Toggle suffle
-const shufflePlay = document.getElementById("randomTrack");
-shufflePlay.addEventListener("click", () => {
-  let params = document.getElementById("randomValue");
+const shufflePlay = document.getElementById('randomTrack');
+shufflePlay.addEventListener('click', () => {
+  let params = document.getElementById('randomValue');
   setShuffle(params.value);
-  if (params.value == "true") {
-    params.value = "false";
+  if (params.value == 'true') {
+    params.value = 'false';
   } else {
-    params.value = "true";
+    params.value = 'true';
   }
 });
 
 // Set repeat mode
-const repeatTrack = document.getElementById("repeatTrack");
-repeatTrack.addEventListener("click", () => {
-  let params = document.getElementById("randomValue");
+const repeatTrack = document.getElementById('repeatTrack');
+repeatTrack.addEventListener('click', () => {
+  let params = document.getElementById('randomValue');
   setRepeat(params.value);
-  if (params.value == "true") {
-    params.value = "false";
+  if (params.value == 'true') {
+    params.value = 'false';
   } else {
-    params.value = "true";
+    params.value = 'true';
   }
 });
 
 // Modifies dom with search results from searchbox
-const search = document.getElementById("song-search");
-const searchResults = document.getElementById("search-result");
+const search = document.getElementById('song-search');
+const searchResults = document.getElementById('search-result');
 
 search.addEventListener(
-  "input",
+  'input',
   debounce(() => {
-    searchResults.innerHTML = "";
+    searchResults.innerHTML = '';
     getSearch(search.value).then((response) => {
       searchResults.innerHTML = `<li
         class="flex w-auto bg-white p-2 hover:bg-green-500 dark:hover:bg-green-500 dark:bg-neutral-900 dark:text-white hover:text-white transition-all cursor-pointer" onclick="playAlbum('${response.albums.items[0].id}', 'album')"
@@ -288,7 +288,7 @@ search.addEventListener(
             ${
               element.explicit == true
                 ? "<p class='text-lg me-2'>&#127348</p>"
-                : ""
+                : ''
             }
             <p>${element.artists[0].name}</p>
           </div>
@@ -300,7 +300,7 @@ search.addEventListener(
 );
 
 // Gets all users playlist and renders them on the page
-const playlistResult = document.getElementById("playlist-dropdown");
+const playlistResult = document.getElementById('playlist-dropdown');
 
 if (parseInt(playlist.total) != 0) {
   playlist.items.forEach((element) => {
@@ -320,8 +320,8 @@ if (parseInt(playlist.total) != 0) {
             <div class="flex flex-row">
               <p>Tracks: ${element.tracks.total}</p>
               <p>&nbsp ${
-                element.owner.display_name == "undefined"
-                  ? ""
+                element.owner.display_name == 'undefined'
+                  ? ''
                   : element.owner.display_name
               }</p>
             </div>
@@ -340,20 +340,20 @@ async function filterConcertsByGenre(artistUrl) {
   showAllConcerts(concerts);
 }
 
-document.getElementById("show-all-btn").addEventListener("click", () => {
+document.getElementById('show-all-btn').addEventListener('click', () => {
   showAllConcerts(concerts);
 });
 
-const concertToggle = document.getElementById("concertToggle");
+const concertToggle = document.getElementById('concertToggle');
 
-concertToggle.addEventListener("change", () => {
-  if (document.getElementById("events-container")) {
-    document.getElementById("events-container").remove();
+concertToggle.addEventListener('change', () => {
+  if (document.getElementById('events-container')) {
+    document.getElementById('events-container').remove();
   } else {
-    let eventsContainer = document.createElement("div");
-    eventsContainer.id = "events-container";
-    eventsContainer.className = "flex flex-col items-center overflow-auto h-56";
-    document.getElementById("player-container").appendChild(eventsContainer);
+    let eventsContainer = document.createElement('div');
+    eventsContainer.id = 'events-container';
+    eventsContainer.className = 'flex flex-col items-center overflow-auto h-56';
+    document.getElementById('player-container').appendChild(eventsContainer);
     showAllConcerts(concerts);
   }
 });
