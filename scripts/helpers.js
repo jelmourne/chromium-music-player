@@ -31,7 +31,7 @@ async function getSearch(Query) {
 
   let args = new URLSearchParams({
     q: Query,
-    type: ['album', 'track'],
+    type: ["album", "track"],
     limit: 4,
   });
 
@@ -62,7 +62,7 @@ async function getUserPlaylist() {
 
 // Set shuffle playback
 async function setShuffle(value) {
-  let accessToken = localStorage.getItem('access_token');
+  let accessToken = localStorage.getItem("access_token");
 
   let args = new URLSearchParams({
     state: value,
@@ -82,18 +82,18 @@ async function setShuffle(value) {
 
 // Set repeat mode
 async function setRepeat(value) {
-  let accessToken = localStorage.getItem('access_token');
+  let accessToken = localStorage.getItem("access_token");
 
   let args = new URLSearchParams({
-    state: value == 'false' ? 'off' : 'track',
+    state: value == "false" ? "off" : "track",
   });
 
   const response = await fetch(
     `https://api.spotify.com/v1/me/player/repeat?${args}`,
     {
-      method: 'put',
+      method: "put",
       headers: {
-        Authorization: 'Bearer ' + accessToken,
+        Authorization: "Bearer " + accessToken,
       },
     }
   ).then((data) => console.log(data));
@@ -114,31 +114,31 @@ async function getEvents(userCountry, genre) {
   const apiKey = "MXLBwKzlHC8GwQe6qv9gdnCw2oWr7N3V";
 
   if (genre.length == 0) {
-    genre = 'pop';
+    genre = "pop";
   } else {
     genre = genre[0];
   }
 
-  if (genre.includes('pop') || genre.includes('band')) {
-    genre = 'pop';
-  } else if (genre.includes('house')) {
-    genre = 'house';
-  } else if (genre.includes('indie')) {
-    genre = 'indie';
-  } else if (genre.includes('rock')) {
-    genre = 'rock';
-  } else if (genre.includes('country')) {
-    genre = 'country';
-  } else if (genre.includes('hip hop') || genre.includes('rap')) {
-    genre = 'rap';
+  if (genre.includes("pop") || genre.includes("band")) {
+    genre = "pop";
+  } else if (genre.includes("house")) {
+    genre = "house";
+  } else if (genre.includes("indie")) {
+    genre = "indie";
+  } else if (genre.includes("rock")) {
+    genre = "rock";
+  } else if (genre.includes("country")) {
+    genre = "country";
+  } else if (genre.includes("hip hop") || genre.includes("rap")) {
+    genre = "rap";
   } else if (
-    genre.includes('electronic') ||
-    genre.includes('dance') ||
-    genre.includes('edm') ||
-    genre.includes('step') ||
-    genre.includes('big room')
+    genre.includes("electronic") ||
+    genre.includes("dance") ||
+    genre.includes("edm") ||
+    genre.includes("step") ||
+    genre.includes("big room")
   ) {
-    genre = 'electronic';
+    genre = "electronic";
   }
 
   try {
@@ -148,7 +148,7 @@ async function getEvents(userCountry, genre) {
     const data = await response.json();
     let fetchedEvents = data._embedded.events;
     let filteredEvents = [];
-    
+
     filteredEvents.push(fetchedEvents[0]);
     for (let i = 1; i < fetchedEvents.length; i++) {
       if (
@@ -162,7 +162,7 @@ async function getEvents(userCountry, genre) {
 
     filteredEvents.map((concert) => {
       if (concert.name.length > 30) {
-        concert.name = concert.name.substring(0, 29) + '...';
+        concert.name = concert.name.substring(0, 29) + "...";
       } else {
         concert.name = concert.name;
       }
@@ -219,16 +219,16 @@ function addButtonListeners(arr) {
 }
 
 function showAllConcerts(arr) {
-  const concertsContainer = document.getElementById('events-container');
-  const favourites = JSON.parse(localStorage.getItem('favourites')) || {};
-  const bookmarkButtonArr = document.getElementsByClassName('save-btn');
+  const concertsContainer = document.getElementById("events-container");
+  const favourites = JSON.parse(localStorage.getItem("favourites")) || {};
+  const bookmarkButtonArr = document.getElementsByClassName("save-btn");
 
-  concertsContainer.innerHTML = '';
+  concertsContainer.innerHTML = "";
   // Create concert information component from fetched data
   arr.forEach((concert) => {
     let bookmarkIconClass = favourites[concert.link]
-      ? 'fa-solid fa-bookmark mx-3'
-      : 'fa-regular fa-bookmark mx-3';
+      ? "fa-solid fa-bookmark mx-3"
+      : "fa-regular fa-bookmark mx-3";
     concertsContainer.innerHTML += `<div class="flex items-center justify-between gap-x-4 border-b-2 pb-5 pt-5 w-full dark:text-white">
     <div class="flex-col text-sm">
       <h4 class="mb-2 font-semibold">${concert.name}</h4>
@@ -237,7 +237,7 @@ function showAllConcerts(arr) {
     <div class="flex">
       <!-- Save to Favourites -->
       <button id="${concert.link}" class="save-btn" type="button">
-        <i id="${concert.link + 'icon'}" class="${bookmarkIconClass}"></i>
+        <i id="${concert.link + "icon"}" class="${bookmarkIconClass}"></i>
       </button>
       <!-- Buy Ticket -->
       <a class="buy-ticket-link" href="${concert.link}" target="_blank">
@@ -249,8 +249,8 @@ function showAllConcerts(arr) {
   </div>`;
   });
 
-  document.getElementById('show-all-btn').hidden = true;
-  document.getElementById('show-saved-btn').hidden = false;
+  document.getElementById("show-all-btn").hidden = true;
+  document.getElementById("show-saved-btn").hidden = false;
   addButtonListeners(bookmarkButtonArr);
 }
 
@@ -262,8 +262,8 @@ function showSavedConcerts() {
   concertsContainer.innerHTML = "";
   Object.values(favourites).forEach((savedConcert) => {
     bookmarkIconClass = favourites[savedConcert.link]
-      ? 'fa-solid fa-bookmark mx-3'
-      : 'fa-regular fa-bookmark mx-3';
+      ? "fa-solid fa-bookmark mx-3"
+      : "fa-regular fa-bookmark mx-3";
     concertsContainer.innerHTML += `<div class="flex items-center justify-between gap-x-4 border-b-2 pb-5 pt-5 w-full dark:text-white">
       <div class="flex-col text-sm">
         <h4 class="mb-2 font-semibold">${savedConcert.name}</h4>
@@ -288,9 +288,9 @@ function showSavedConcerts() {
     </div>`;
   });
 
-  addButtonListeners(document.getElementsByClassName('remove-btn'));
-  document.getElementById('show-saved-btn').hidden = true;
-  document.getElementById('show-all-btn').hidden = false;
+  addButtonListeners(document.getElementsByClassName("remove-btn"));
+  document.getElementById("show-saved-btn").hidden = true;
+  document.getElementById("show-all-btn").hidden = false;
 }
 
 async function getArtistGenre(artistAPIUrl) {
@@ -305,42 +305,6 @@ async function getArtistGenre(artistAPIUrl) {
     .then((artistInfo) => {
       return artistInfo.genres;
     });
-}
-
-function showAllConcerts(arr) {
-  const concertsContainer = document.getElementById('events-container');
-  const favourites = JSON.parse(localStorage.getItem('favourites')) || {};
-  const bookmarkButtonArr = document.getElementsByClassName('save-btn');
-
-  concertsContainer.innerHTML = '';
-  // Create concert information component from fetched data
-  arr.forEach((concert) => {
-    let bookmarkIconClass = favourites[concert.link]
-      ? 'fa-solid fa-bookmark mx-3'
-      : 'fa-regular fa-bookmark mx-3';
-    concertsContainer.innerHTML += `<div class="flex items-center justify-between gap-x-4 border-b-2 pb-5 pt-5 w-full dark:text-white">
-    <div class="flex-col text-sm">
-      <h4 class="mb-2 font-semibold">${concert.name}</h4>
-      <p>${new Date(concert.date).toDateString()} @ ${concert.time}</p>
-    </div>
-    <div class="flex">
-      <!-- Save to Favourites -->
-      <button id="${concert.link}" class="save-btn" type="button">
-        <i id="${concert.link + 'icon'}" class="${bookmarkIconClass}"></i>
-      </button>
-      <!-- Buy Ticket -->
-      <a class="buy-ticket-link" href="${concert.link}" target="_blank">
-        <button class="buy-ticket-btn" type="button">
-        <i class="fa-solid fa-ticket mx-3"></i>
-        </button>
-      </a>
-    </div>
-  </div>`;
-  });
-
-  document.getElementById('show-all-btn').hidden = true;
-  document.getElementById('show-saved-btn').hidden = false;
-  addButtonListeners(bookmarkButtonArr);
 }
 
 export {
