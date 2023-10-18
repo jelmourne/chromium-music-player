@@ -126,17 +126,22 @@ async function getEvents(userCountry, genre) {
     genre = 'pop';
   } else if (genre.includes('house')) {
     genre = 'house';
+  } else if (genre.includes('indie')) {
+    genre = 'indie';
+  } else if (genre.includes('rock')) {
+    genre = 'rock';
+  } else if (genre.includes('country')) {
+    genre = 'country';
+  } else if (genre.includes('hip hop') || genre.includes('rap')) {
+    genre = 'rap';
   } else if (
     genre.includes('electronic') ||
+    genre.includes('dance') ||
     genre.includes('edm') ||
     genre.includes('step') ||
     genre.includes('big room')
   ) {
     genre = 'electronic';
-  } else if (genre.includes('rock')) {
-    genre = 'rock';
-  } else if (genre.includes('hip') || genre.includes('rap')) {
-    genre = 'hip hop';
   }
 
   try {
@@ -147,6 +152,7 @@ async function getEvents(userCountry, genre) {
     let fetchedEvents = data._embedded.events;
     let filteredEvents = [];
 
+    filteredEvents.push(fetchedEvents[0]);
     for (let i = 1; i < fetchedEvents.length; i++) {
       if (
         !fetchedEvents[i].name.includes(

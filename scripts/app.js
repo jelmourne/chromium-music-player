@@ -55,6 +55,12 @@ try {
 
 if (localStorage.getItem('access_token')) {
   document.getElementById('login-button').hidden = true;
+} else {
+  document.getElementById('media-container').hidden = true;
+  document.getElementById('search-container').hidden = true;
+  document.getElementById('profile-info').hidden = true;
+  document.getElementById('show-saved-btn').hidden = true;
+  document.getElementById('logout-btn').hidden = true;
 }
 
 if (window.matchMedia('(prefers-color-scheme: dark)').matches === true) {
@@ -182,8 +188,11 @@ window.onSpotifyWebPlaybackSDKReady = () => {
       clearInterval(timer);
     }
 
+    let currentTrackName = state.track_window.current_track.name;
     document.getElementById('current-song-name').innerHTML =
-      state.track_window.current_track.name;
+      currentTrackName.length > 40
+        ? currentTrackName.substring(0, 49) + '...'
+        : currentTrackName;
 
     document.getElementById('current-song-img').src =
       state.track_window.current_track.album.images[0].url;
