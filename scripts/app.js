@@ -52,9 +52,9 @@ try {
 } catch (ex) {
   alert(ex);
 }
-console.log(profile);
+
 if (localStorage.getItem('access_token')) {
-  document.getElementById('login-button').hidden = false;
+  document.getElementById('login-button').hidden = true;
 } else {
   document.getElementById('media-container').hidden = true;
   document.getElementById('search-container').hidden = true;
