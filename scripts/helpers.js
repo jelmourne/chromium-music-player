@@ -158,6 +158,11 @@ async function getEvents(userCountry, genre) {
     }
 
     filteredEvents.map((concert) => {
+      if (concert.name.length > 30) {
+        concert.name = concert.name.substring(0, 29) + '...';
+      } else {
+        concert.name = concert.name;
+      }
       concert.date = new Date(concert.dates.start.localDate);
       concert.time = concert.dates.start.localTime;
       concert.link = concert.url;
@@ -190,10 +195,7 @@ function removeFavourite(concertUrl) {
     localStorage.setItem('favourites', JSON.stringify(favourites));
     let notSavedIcon = document.getElementById(concertUrl + 'icon');
     notSavedIcon.className = 'fa-regular fa-bookmark mx-3';
-    if (
-      document.getElementById('toggle-favs-text').innerHTML ==
-      'Show All Concerts'
-    ) {
+    if (!document.getElementById('show-all-btn').hidden) {
       showSavedConcerts();
     }
   }
@@ -221,10 +223,10 @@ function showAllConcerts(arr) {
     let bookmarkIconClass = favourites[concert.link]
       ? 'fa-solid fa-bookmark mx-3'
       : 'fa-regular fa-bookmark mx-3';
-    concertsContainer.innerHTML += `<div class="flex items-center justify-between gap-x-4 border-b-2 pb-5 pt-5 w-full">
-    <div class="flex-col">
+    concertsContainer.innerHTML += `<div class="flex items-center justify-between gap-x-4 border-b-2 pb-5 pt-5 w-full dark:text-white">
+    <div class="flex-col text-sm">
       <h4 class="mb-2 font-semibold">${concert.name}</h4>
-      <p>${concert.date.toDateString()} @ ${concert.time}</p>
+      <p>${new Date(concert.date).toDateString()} @ ${concert.time}</p>
     </div>
     <div class="flex">
       <!-- Save to Favourites -->
@@ -234,11 +236,32 @@ function showAllConcerts(arr) {
       <!-- Buy Ticket -->
       <a class="buy-ticket-link" href="${concert.link}" target="_blank">
         <button class="buy-ticket-btn" type="button">
-          <i class="fa-solid fa-ticket mx-3"></i>
+        <i class="fa-solid fa-ticket mx-3"></i>
         </button>
       </a>
     </div>
   </div>`;
+    //   let bookmarkIconClass = favourites[concert.link]
+    //     ? 'fa-solid fa-bookmark mx-3'
+    //     : 'fa-regular fa-bookmark mx-3';
+    //   concertsContainer.innerHTML += `<div class="flex items-center justify-between gap-x-4 border-b-2 pb-5 pt-5 w-10/12">
+    //   <div class="flex-col text-sm">
+    //     <h4 class="mb-2 font-semibold">${concert.name}</h4>
+    //     <p>${concert.date.toDateString()} @ ${concert.time}</p>
+    //   </div>
+    //   <div class="flex">
+    //     <!-- Save to Favourites -->
+    //     <button id="${concert.link}" class="save-btn" type="button">
+    //       <i id="${concert.link + 'icon'}" class="${bookmarkIconClass}"></i>
+    //     </button>
+    //     <!-- Buy Ticket -->
+    //     <a class="buy-ticket-link" href="${concert.link}" target="_blank">
+    //       <button class="buy-ticket-btn" type="button">
+    //         <i class="fa-solid fa-ticket mx-3"></i>
+    //       </button>
+    //     </a>
+    //   </div>
+    // </div>`;
   });
 
   document.getElementById('show-all-btn').hidden = true;
@@ -256,8 +279,8 @@ function showSavedConcerts() {
     bookmarkIconClass = favourites[savedConcert.link]
       ? 'fa-solid fa-bookmark mx-3'
       : 'fa-regular fa-bookmark mx-3';
-    concertsContainer.innerHTML += `<div class="flex items-center justify-between gap-x-4 border-b-2 pb-5 pt-5 w-full">
-      <div class="flex-col">
+    concertsContainer.innerHTML += `<div class="flex items-center justify-between gap-x-4 border-b-2 pb-5 pt-5 w-full dark:text-white">
+      <div class="flex-col text-sm">
         <h4 class="mb-2 font-semibold">${savedConcert.name}</h4>
         <p>${new Date(savedConcert.date).toDateString()} @ ${
       savedConcert.time
@@ -283,11 +306,6 @@ function showSavedConcerts() {
   addButtonListeners(document.getElementsByClassName('remove-btn'));
   document.getElementById('show-saved-btn').hidden = true;
   document.getElementById('show-all-btn').hidden = false;
-
-  // document.getElementById('toggle-favs-text').innerHTML = 'Show All Concerts';
-  // document.getElementById('toggle-favs-btn').addEventListener('click', () => {
-  //   showAllConcerts(concerts);
-  // });
 }
 
 async function getArtistGenre(artistAPIUrl) {

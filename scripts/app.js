@@ -343,8 +343,7 @@ concertToggle.addEventListener('change', () => {
   } else {
     let eventsContainer = document.createElement('div');
     eventsContainer.id = 'events-container';
-    eventsContainer.className =
-      'flex flex-col items-center justify-center overflow-auto h-96';
+    eventsContainer.className = 'flex flex-col items-center overflow-auto h-56';
     document.getElementById('player-container').appendChild(eventsContainer);
     showAllConcerts(concerts);
   }
