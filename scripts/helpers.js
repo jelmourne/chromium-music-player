@@ -31,7 +31,7 @@ async function getSearch(Query) {
 
   let args = new URLSearchParams({
     q: Query,
-    type: ["album", "track"],
+    type: ['album', 'track'],
     limit: 4,
   });
 
@@ -62,7 +62,7 @@ async function getUserPlaylist() {
 
 // Set shuffle playback
 async function setShuffle(value) {
-  let accessToken = localStorage.getItem("access_token");
+  let accessToken = localStorage.getItem('access_token');
 
   let args = new URLSearchParams({
     state: value,
@@ -83,18 +83,18 @@ async function setShuffle(value) {
 
 // Set repeat mode
 async function setRepeat(value) {
-  let accessToken = localStorage.getItem("access_token");
+  let accessToken = localStorage.getItem('access_token');
 
   let args = new URLSearchParams({
-    state: value == "false" ? "off" : "track",
+    state: value == 'false' ? 'off' : 'track',
   });
 
   const response = await fetch(
     `https://api.spotify.com/v1/me/player/repeat?${args}`,
     {
-      method: "put",
+      method: 'put',
       headers: {
-        Authorization: "Bearer " + accessToken,
+        Authorization: 'Bearer ' + accessToken,
       },
     }
   ).then((data) => console.log(data));
@@ -116,56 +116,67 @@ async function getEvents(userCountry, genre) {
   const rootURL = 'https://app.ticketmaster.com/discovery/v2/';
   const apiKey = 'MXLBwKzlHC8GwQe6qv9gdnCw2oWr7N3V';
 
+  if (genre.length == 0) {
+    genre = 'pop';
+  } else {
+    genre = genre[0];
+  }
+
+  if (genre.includes('pop') || genre.includes('band')) {
+    genre = 'pop';
+  } else if (genre.includes('house')) {
+    genre = 'house';
+  } else if (genre.includes('indie')) {
+    genre = 'indie';
+  } else if (genre.includes('rock')) {
+    genre = 'rock';
+  } else if (genre.includes('country')) {
+    genre = 'country';
+  } else if (genre.includes('hip hop') || genre.includes('rap')) {
+    genre = 'rap';
+  } else if (
+    genre.includes('electronic') ||
+    genre.includes('dance') ||
+    genre.includes('edm') ||
+    genre.includes('step') ||
+    genre.includes('big room')
+  ) {
+    genre = 'electronic';
+  }
+
   try {
     const response = await fetch(
-      `${rootURL}events.json?classificationName=music&apikey=${apiKey}&countryCode=${userCountry}&size=200`
+      `${rootURL}events.json?classificationName=${genre}&apikey=${apiKey}&countryCode=${userCountry}&size=200`
     );
     const data = await response.json();
     let fetchedEvents = data._embedded.events;
     let filteredEvents = [];
-    let defaultEvents = [];
 
-    for (let i = 0; i < fetchedEvents.length; i++) {
-      let event = {
-        name: fetchedEvents[i].name,
-        date: new Date(fetchedEvents[i].dates.start.localDate),
-        time: fetchedEvents[i].dates.start.localTime,
-        link: fetchedEvents[i].url,
-        image: fetchedEvents[i].images[0].url,
-        genre: fetchedEvents[i].classifications[0].genre.name,
-      };
-
-      let substr = event.name.substring(0,5)
-      if (matchConcertName(filteredEvents, substr) || matchConcertName(defaultEvents, substr)) {
-        continue;
+    filteredEvents.push(fetchedEvents[0]);
+    for (let i = 1; i < fetchedEvents.length; i++) {
+      if (
+        !fetchedEvents[i].name.includes(
+          fetchedEvents[i - 1].name.substring(0, 3)
+        )
+      ) {
+        filteredEvents.push(fetchedEvents[i]);
       }
+    }
 
-      for (let i = 0; i < genre.length; i++) {
-        if (event.genre.toLowerCase().includes(genre[i])) {
-          filteredEvents.push(event);
-          break;
-        }
+    filteredEvents.map((concert) => {
+      if (concert.name.length > 30) {
+        concert.name = concert.name.substring(0, 29) + '...';
+      } else {
+        concert.name = concert.name;
       }
-      defaultEvents.push(event);
-    }
-    if (filteredEvents.length == 0) {
-      defaultEvents.length = 50;
-      return defaultEvents;
-    }
-    console.log(filteredEvents);
+      concert.date = new Date(concert.dates.start.localDate);
+      concert.time = concert.dates.start.localTime;
+      concert.link = concert.url;
+    });
     return filteredEvents;
   } catch (ex) {
     console.log(ex);
   }
-}
-
-function matchConcertName(arr, substr) {
-  for (let i = 0; i < arr.length; i++) {
-    if (arr[i].name.includes(substr)) {
-      return true;
-    }
-  }
-  return false;
 }
 
 // Add concert to favourites (local storage)
@@ -190,10 +201,7 @@ function removeFavourite(concertUrl) {
     localStorage.setItem('favourites', JSON.stringify(favourites));
     let notSavedIcon = document.getElementById(concertUrl + 'icon');
     notSavedIcon.className = 'fa-regular fa-bookmark mx-3';
-    if (
-      document.getElementById('toggle-favs-text').innerHTML ==
-      'Show All Concerts'
-    ) {
+    if (!document.getElementById('show-all-btn').hidden) {
       showSavedConcerts();
     }
   }
@@ -210,6 +218,42 @@ function addButtonListeners(arr) {
   });
 }
 
+function showAllConcerts(arr) {
+  const concertsContainer = document.getElementById('events-container');
+  const favourites = JSON.parse(localStorage.getItem('favourites')) || {};
+  const bookmarkButtonArr = document.getElementsByClassName('save-btn');
+
+  concertsContainer.innerHTML = '';
+  // Create concert information component from fetched data
+  arr.forEach((concert) => {
+    let bookmarkIconClass = favourites[concert.link]
+      ? 'fa-solid fa-bookmark mx-3'
+      : 'fa-regular fa-bookmark mx-3';
+    concertsContainer.innerHTML += `<div class="flex items-center justify-between gap-x-4 border-b-2 pb-5 pt-5 w-full dark:text-white">
+    <div class="flex-col text-sm">
+      <h4 class="mb-2 font-semibold">${concert.name}</h4>
+      <p>${new Date(concert.date).toDateString()} @ ${concert.time}</p>
+    </div>
+    <div class="flex">
+      <!-- Save to Favourites -->
+      <button id="${concert.link}" class="save-btn" type="button">
+        <i id="${concert.link + 'icon'}" class="${bookmarkIconClass}"></i>
+      </button>
+      <!-- Buy Ticket -->
+      <a class="buy-ticket-link" href="${concert.link}" target="_blank">
+        <button class="buy-ticket-btn" type="button">
+        <i class="fa-solid fa-ticket mx-3"></i>
+        </button>
+      </a>
+    </div>
+  </div>`;
+  });
+
+  document.getElementById('show-all-btn').hidden = true;
+  document.getElementById('show-saved-btn').hidden = false;
+  addButtonListeners(bookmarkButtonArr);
+}
+
 function showSavedConcerts() {
   const concertsContainer = document.getElementById('events-container');
   let favourites = JSON.parse(localStorage.getItem('favourites'));
@@ -220,8 +264,8 @@ function showSavedConcerts() {
     bookmarkIconClass = favourites[savedConcert.link]
       ? 'fa-solid fa-bookmark mx-3'
       : 'fa-regular fa-bookmark mx-3';
-    concertsContainer.innerHTML += `<div class="flex items-center justify-between gap-x-4 border-b-2 pb-5 pt-5 w-full">
-      <div class="flex-col">
+    concertsContainer.innerHTML += `<div class="flex items-center justify-between gap-x-4 border-b-2 pb-5 pt-5 w-full dark:text-white">
+      <div class="flex-col text-sm">
         <h4 class="mb-2 font-semibold">${savedConcert.name}</h4>
         <p>${new Date(savedConcert.date).toDateString()} @ ${
       savedConcert.time
@@ -245,11 +289,8 @@ function showSavedConcerts() {
   });
 
   addButtonListeners(document.getElementsByClassName('remove-btn'));
-
-  document.getElementById('toggle-favs-text').innerHTML = 'Show All Concerts';
-  document.getElementById('toggle-favs-btn').addEventListener('click', () => {
-    showAllConcerts(concerts);
-  });
+  document.getElementById('show-saved-btn').hidden = true;
+  document.getElementById('show-all-btn').hidden = false;
 }
 
 async function getArtistGenre(artistAPIUrl) {
@@ -264,45 +305,6 @@ async function getArtistGenre(artistAPIUrl) {
     .then((artistInfo) => {
       return artistInfo.genres;
     });
-}
-
-function showAllConcerts(arr) {
-  const concertsContainer = document.getElementById('events-container');
-  const favourites = JSON.parse(localStorage.getItem('favourites')) || {};
-  const bookmarkButtonArr = document.getElementsByClassName('save-btn');
-
-  concertsContainer.innerHTML = '';
-  // Create concert information component from fetched data
-  arr.forEach((concert) => {
-    let bookmarkIconClass = favourites[concert.link]
-      ? 'fa-solid fa-bookmark mx-3'
-      : 'fa-regular fa-bookmark mx-3';
-    concertsContainer.innerHTML += `<div class="flex items-center justify-between gap-x-4 border-b-2 pb-5 pt-5 w-full">
-    <div class="flex-col">
-      <h4 class="mb-2 font-semibold">${concert.name}</h4>
-      <p>${concert.date.toDateString()} @ ${concert.time}</p>
-    </div>
-    <div class="flex">
-      <!-- Save to Favourites -->
-      <button id="${concert.link}" class="save-btn" type="button">
-        <i id="${concert.link + 'icon'}" class="${bookmarkIconClass}"></i>
-      </button>
-      <!-- Buy Ticket -->
-      <a class="buy-ticket-link" href="${concert.link}" target="_blank">
-        <button class="buy-ticket-btn" type="button">
-          <i class="fa-solid fa-ticket mx-3"></i>
-        </button>
-      </a>
-    </div>
-  </div>`;
-  });
-
-  addButtonListeners(bookmarkButtonArr);
-
-  document.getElementById('toggle-favs-text').innerHTML = 'Show Saved Concerts';
-  document.getElementById('toggle-favs-btn').addEventListener('click', () => {
-    showSavedConcerts(concerts);
-  });
 }
 
 export {
