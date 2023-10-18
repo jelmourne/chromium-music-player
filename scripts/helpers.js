@@ -31,7 +31,7 @@ async function getSearch(Query) {
 
   let args = new URLSearchParams({
     q: Query,
-    type: ["album", "track"],
+    type: ['album', 'track'],
     limit: 4,
   });
 
@@ -62,7 +62,7 @@ async function getUserPlaylist() {
 
 // Set shuffle playback
 async function setShuffle(value) {
-  let accessToken = localStorage.getItem("access_token");
+  let accessToken = localStorage.getItem('access_token');
 
   let args = new URLSearchParams({
     state: value,
@@ -83,18 +83,18 @@ async function setShuffle(value) {
 
 // Set repeat mode
 async function setRepeat(value) {
-  let accessToken = localStorage.getItem("access_token");
+  let accessToken = localStorage.getItem('access_token');
 
   let args = new URLSearchParams({
-    state: value == "false" ? "off" : "track",
+    state: value == 'false' ? 'off' : 'track',
   });
 
   const response = await fetch(
     `https://api.spotify.com/v1/me/player/repeat?${args}`,
     {
-      method: "put",
+      method: 'put',
       headers: {
-        Authorization: "Bearer " + accessToken,
+        Authorization: 'Bearer ' + accessToken,
       },
     }
   ).then((data) => console.log(data));
@@ -116,56 +116,53 @@ async function getEvents(userCountry, genre) {
   const rootURL = 'https://app.ticketmaster.com/discovery/v2/';
   const apiKey = 'MXLBwKzlHC8GwQe6qv9gdnCw2oWr7N3V';
 
+  if (genre.length == 0) {
+    genre = 'pop';
+  } else {
+    genre = genre[0];
+  }
+
+  if (genre.includes('pop') || genre.includes('band')) {
+    genre = 'pop';
+  } else if (genre.includes('house')) {
+    genre = 'house';
+  } else if (
+    genre.includes('electronic') ||
+    genre.includes('edm') ||
+    genre.includes('step')
+  ) {
+    genre = 'electronic';
+  } else if (genre.includes('rock')) {
+    genre = 'rock';
+  }
+
   try {
     const response = await fetch(
-      `${rootURL}events.json?classificationName=music&apikey=${apiKey}&countryCode=${userCountry}&size=200`
+      `${rootURL}events.json?classificationName=${genre}&apikey=${apiKey}&countryCode=${userCountry}&size=200`
     );
     const data = await response.json();
     let fetchedEvents = data._embedded.events;
     let filteredEvents = [];
-    let defaultEvents = [];
 
-    for (let i = 0; i < fetchedEvents.length; i++) {
-      let event = {
-        name: fetchedEvents[i].name,
-        date: new Date(fetchedEvents[i].dates.start.localDate),
-        time: fetchedEvents[i].dates.start.localTime,
-        link: fetchedEvents[i].url,
-        image: fetchedEvents[i].images[0].url,
-        genre: fetchedEvents[i].classifications[0].genre.name,
-      };
-
-      let substr = event.name.substring(0,5)
-      if (matchConcertName(filteredEvents, substr) || matchConcertName(defaultEvents, substr)) {
-        continue;
+    for (let i = 1; i < fetchedEvents.length; i++) {
+      if (
+        !fetchedEvents[i].name.includes(
+          fetchedEvents[i - 1].name.substring(0, 3)
+        )
+      ) {
+        filteredEvents.push(fetchedEvents[i]);
       }
+    }
 
-      for (let i = 0; i < genre.length; i++) {
-        if (event.genre.toLowerCase().includes(genre[i])) {
-          filteredEvents.push(event);
-          break;
-        }
-      }
-      defaultEvents.push(event);
-    }
-    if (filteredEvents.length == 0) {
-      defaultEvents.length = 50;
-      return defaultEvents;
-    }
-    console.log(filteredEvents);
+    filteredEvents.map((concert) => {
+      concert.date = new Date(concert.dates.start.localDate);
+      concert.time = concert.dates.start.localTime;
+      concert.link = concert.url;
+    });
     return filteredEvents;
   } catch (ex) {
     console.log(ex);
   }
-}
-
-function matchConcertName(arr, substr) {
-  for (let i = 0; i < arr.length; i++) {
-    if (arr[i].name.includes(substr)) {
-      return true;
-    }
-  }
-  return false;
 }
 
 // Add concert to favourites (local storage)
