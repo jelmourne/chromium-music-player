@@ -4,8 +4,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Spotify Chrome Extension</title>
-    <script type="module" src="./scripts/app.js"></script>
     <link rel="stylesheet" href="./styles/style.css" />
+    <script type="module" src="./scripts/app.js"></script>
     <script
       src="https://kit.fontawesome.com/e2de3a3f6a.js"
       crossorigin="anonymous"
@@ -191,16 +191,16 @@
 
     <script>
       async function playSong(uri) {
-        const accessToken = localStorage.getItem("access_token");
+        const accessToken = localStorage.getItem('access_token');
 
         if (!Array.isArray(uri)) {
           uri = [uri];
         }
 
         const response = await fetch(
-          "https://api.spotify.com/v1/me/player/play",
+          'https://api.spotify.com/v1/me/player/play',
           {
-            method: "PUT",
+            method: 'PUT',
             body: JSON.stringify({
               offset: {
                 position: 0,
@@ -208,7 +208,7 @@
               uris: uri,
             }),
             headers: new Headers({
-              Authorization: "Bearer " + accessToken,
+              Authorization: 'Bearer ' + accessToken,
             }),
           }
         );
@@ -216,15 +216,15 @@
 
       // Get playlist tracks
       async function getTracks(playlistId, type) {
-        const accessToken = localStorage.getItem("access_token");
+        const accessToken = localStorage.getItem('access_token');
 
         const response = await fetch(
           `https://api.spotify.com/v1/${
-            type == "album" ? "albums" : "playlists"
+            type == 'album' ? 'albums' : 'playlists'
           }/${playlistId}/tracks`,
           {
             headers: {
-              Authorization: "Bearer " + accessToken,
+              Authorization: 'Bearer ' + accessToken,
             },
           }
         );
@@ -234,12 +234,12 @@
 
       async function playAlbum(playlistId, type) {
         let uri = [];
-        const accessToken = localStorage.getItem("access_token");
+        const accessToken = localStorage.getItem('access_token');
 
         const tracks = await getTracks(playlistId, type);
 
         tracks.items.forEach((element) => {
-          if (type == "playlists") {
+          if (type == 'playlists') {
             uri.push(element.track.uri);
           } else {
             uri.push(element.uri);
