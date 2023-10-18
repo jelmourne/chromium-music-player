@@ -162,6 +162,7 @@ async function getEvents(userCountry, genre) {
     }
 
     filteredEvents.map((concert) => {
+      console.log(concert.name.length);
       if (concert.name.length > 30) {
         concert.name = concert.name.substring(0, 29) + '...';
       } else {
