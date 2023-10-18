@@ -53,6 +53,10 @@ try {
   alert(ex);
 }
 
+if (localStorage.getItem('access_token')) {
+  document.getElementById('login-button').hidden = true;
+}
+
 if (window.matchMedia('(prefers-color-scheme: dark)').matches === true) {
   localStorage.setItem('theme', 'dark');
 } else {

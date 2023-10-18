@@ -241,27 +241,6 @@ function showAllConcerts(arr) {
       </a>
     </div>
   </div>`;
-    //   let bookmarkIconClass = favourites[concert.link]
-    //     ? 'fa-solid fa-bookmark mx-3'
-    //     : 'fa-regular fa-bookmark mx-3';
-    //   concertsContainer.innerHTML += `<div class="flex items-center justify-between gap-x-4 border-b-2 pb-5 pt-5 w-10/12">
-    //   <div class="flex-col text-sm">
-    //     <h4 class="mb-2 font-semibold">${concert.name}</h4>
-    //     <p>${concert.date.toDateString()} @ ${concert.time}</p>
-    //   </div>
-    //   <div class="flex">
-    //     <!-- Save to Favourites -->
-    //     <button id="${concert.link}" class="save-btn" type="button">
-    //       <i id="${concert.link + 'icon'}" class="${bookmarkIconClass}"></i>
-    //     </button>
-    //     <!-- Buy Ticket -->
-    //     <a class="buy-ticket-link" href="${concert.link}" target="_blank">
-    //       <button class="buy-ticket-btn" type="button">
-    //         <i class="fa-solid fa-ticket mx-3"></i>
-    //       </button>
-    //     </a>
-    //   </div>
-    // </div>`;
   });
 
   document.getElementById('show-all-btn').hidden = true;
