@@ -13,27 +13,25 @@ import {
   setRepeat,
 } from './helpers.js';
 
-/* 
 // Check if user is logged in and change profile icon
 const profileSection = document.getElementById("profile");
 
 localStorage.getItem("access_token") == null
-  ? (profileSection.innerHTML = `
+  ? ((profileSection.innerHTML = `
 <button
 id="login-button"
 type="button"
 >
-<i class="fa-brands fa-spotify mx-3"></i>
-</button>`)
+<i class="fa-brands fa-spotify mx-3 text-green-500"></i>
+</button>`),
+    profileSection.removeAttribute("data-dropdown-toggle"))
   : (profileSection.innerHTML = `<button
 data-dropdown-toggle="account-dropdown"
 type="button"
 id="profile-button"
 >
-<i class="fa-solid fa-user mx-3"></i>
+<i class="fa-solid fa-user mx-3 dark:text-white"></i>
 </button>`);
-
-*/
 
 // Declaring consts
 const profile = await getProfile();
@@ -47,11 +45,9 @@ document.getElementsByTagName('head')[0].appendChild(tag);
 // DOM Manipulation Section
 try {
   document
-    .getElementById('login-button')
-    .addEventListener('click', authorization);
-} catch (ex) {
-  alert(ex);
-}
+    .getElementById("login-button")
+    .addEventListener("click", authorization);
+} catch (ex) {console.log(ex)}
 
 if (localStorage.getItem('access_token')) {
   document.getElementById('login-button').hidden = true;
@@ -334,7 +330,7 @@ if (parseInt(playlist.total) != 0) {
   });
 } else {
   playlistResult.innerHTML =
-    "<li class='flex w-auto bg-white p-1 m-6'>No Playlist Available</li>";
+    "<li class='flex w-auto bg-white dark:bg-neutral-900 dark:text-white p-1 m-6'>No Playlist Available</li>";
 }
 
 let concerts;

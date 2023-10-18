@@ -1,4 +1,4 @@
-import { concerts } from './app';
+import { concerts } from "./app";
 
 // Delay timer used for search
 function debounce(func, duration) {
@@ -14,11 +14,11 @@ function debounce(func, duration) {
 
 // Retrieves profile object from Spotify API
 async function getProfile() {
-  let accessToken = localStorage.getItem('access_token');
+  let accessToken = localStorage.getItem("access_token");
 
-  const response = await fetch('https://api.spotify.com/v1/me', {
+  const response = await fetch("https://api.spotify.com/v1/me", {
     headers: {
-      Authorization: 'Bearer ' + accessToken,
+      Authorization: "Bearer " + accessToken,
     },
   });
 
@@ -27,7 +27,7 @@ async function getProfile() {
 
 // Search function
 async function getSearch(Query) {
-  let accessToken = localStorage.getItem('access_token');
+  let accessToken = localStorage.getItem("access_token");
 
   let args = new URLSearchParams({
     q: Query,
@@ -37,7 +37,7 @@ async function getSearch(Query) {
 
   const response = await fetch(`https://api.spotify.com/v1/search?${args}`, {
     headers: {
-      Authorization: 'Bearer ' + accessToken,
+      Authorization: "Bearer " + accessToken,
     },
   });
   return await response.json();
@@ -45,14 +45,14 @@ async function getSearch(Query) {
 
 // Get users list of playlists
 async function getUserPlaylist() {
-  let accessToken = localStorage.getItem('access_token');
+  let accessToken = localStorage.getItem("access_token");
   const profile = await getProfile();
 
   const response = await fetch(
     `https://api.spotify.com/v1/users/${await profile.id}/playlists`,
     {
       headers: {
-        Authorization: 'Bearer ' + accessToken,
+        Authorization: "Bearer " + accessToken,
       },
     }
   );
@@ -67,15 +67,14 @@ async function setShuffle(value) {
   let args = new URLSearchParams({
     state: value,
   });
+  console.log(value);
 
   const response = await fetch(
-    `https://api.spotify.com/v1/me/player/${
-      value == 'true' ? 'shuffle?' + args : 'shuffle'
-    }`,
+    `https://api.spotify.com/v1/me/player/shuffle?${args}`,
     {
-      method: 'put',
+      method: "put",
       headers: {
-        Authorization: 'Bearer ' + accessToken,
+        Authorization: "Bearer " + accessToken,
       },
     }
   );
@@ -105,14 +104,14 @@ function getMinAndSec(ms) {
   var min = Math.floor(ms / 60000);
   var sec = ((ms % 60000) / 1000).toFixed(0);
 
-  return sec == 60 ? min + 1 + ':00' : min + ':' + (sec < 10 ? '0' : '') + sec;
+  return sec == 60 ? min + 1 + ":00" : min + ":" + (sec < 10 ? "0" : "") + sec;
 }
 
 // Function that calls ticketmaster API to fetch events in the users country based off artist genre
 
 async function getEvents(userCountry, genre) {
-  const rootURL = 'https://app.ticketmaster.com/discovery/v2/';
-  const apiKey = 'MXLBwKzlHC8GwQe6qv9gdnCw2oWr7N3V';
+  const rootURL = "https://app.ticketmaster.com/discovery/v2/";
+  const apiKey = "MXLBwKzlHC8GwQe6qv9gdnCw2oWr7N3V";
 
   if (genre.length == 0) {
     genre = 'pop';
@@ -149,7 +148,7 @@ async function getEvents(userCountry, genre) {
     const data = await response.json();
     let fetchedEvents = data._embedded.events;
     let filteredEvents = [];
-
+    
     filteredEvents.push(fetchedEvents[0]);
     for (let i = 1; i < fetchedEvents.length; i++) {
       if (
@@ -179,27 +178,30 @@ async function getEvents(userCountry, genre) {
 
 // Add concert to favourites (local storage)
 function addToFavourites(concertUrl) {
-  let favourites = JSON.parse(localStorage.getItem('favourites')) || {};
+  let favourites = JSON.parse(localStorage.getItem("favourites")) || {};
   concerts.forEach((concert) => {
     if (concert.link.includes(concertUrl)) {
       favourites[concertUrl] = concert;
-      localStorage.setItem('favourites', JSON.stringify(favourites));
-      let savedIcon = document.getElementById(concertUrl + 'icon');
-      savedIcon.className = 'fa-solid fa-bookmark mx-3';
+      localStorage.setItem("favourites", JSON.stringify(favourites));
+      let savedIcon = document.getElementById(concertUrl + "icon");
+      savedIcon.className = "fa-solid fa-bookmark mx-3";
     }
   });
 }
 
 // Remove concert from favourites (local storage)
 function removeFavourite(concertUrl) {
-  let favourites = JSON.parse(localStorage.getItem('favourites')) || {};
+  let favourites = JSON.parse(localStorage.getItem("favourites")) || {};
 
   if (favourites[concertUrl]) {
     delete favourites[concertUrl];
-    localStorage.setItem('favourites', JSON.stringify(favourites));
-    let notSavedIcon = document.getElementById(concertUrl + 'icon');
-    notSavedIcon.className = 'fa-regular fa-bookmark mx-3';
-    if (!document.getElementById('show-all-btn').hidden) {
+    localStorage.setItem("favourites", JSON.stringify(favourites));
+    let notSavedIcon = document.getElementById(concertUrl + "icon");
+    notSavedIcon.className = "fa-regular fa-bookmark mx-3";
+    if (
+      document.getElementById("toggle-favs-text").innerHTML ==
+      "Show All Concerts"
+    ) {
       showSavedConcerts();
     }
   }
@@ -207,9 +209,9 @@ function removeFavourite(concertUrl) {
 
 function addButtonListeners(arr) {
   Array.from(arr).forEach((btn) => {
-    btn.addEventListener('click', () => {
-      document.getElementById(btn.id + 'icon').className ==
-      'fa-regular fa-bookmark mx-3'
+    btn.addEventListener("click", () => {
+      document.getElementById(btn.id + "icon").className ==
+      "fa-regular fa-bookmark mx-3"
         ? addToFavourites(btn.id)
         : removeFavourite(btn.id);
     });
@@ -253,11 +255,11 @@ function showAllConcerts(arr) {
 }
 
 function showSavedConcerts() {
-  const concertsContainer = document.getElementById('events-container');
-  let favourites = JSON.parse(localStorage.getItem('favourites'));
+  const concertsContainer = document.getElementById("events-container");
+  let favourites = JSON.parse(localStorage.getItem("favourites"));
   let bookmarkIconClass;
 
-  concertsContainer.innerHTML = '';
+  concertsContainer.innerHTML = "";
   Object.values(favourites).forEach((savedConcert) => {
     bookmarkIconClass = favourites[savedConcert.link]
       ? 'fa-solid fa-bookmark mx-3'
@@ -273,7 +275,7 @@ function showSavedConcerts() {
         <!-- Save to Favourites -->
         <button id="${savedConcert.link}" class="remove-btn" type="button">
           <i id="${
-            savedConcert.link + 'icon'
+            savedConcert.link + "icon"
           }" class="${bookmarkIconClass}"></i>
         </button>
         <!-- Buy Ticket -->
@@ -292,17 +294,53 @@ function showSavedConcerts() {
 }
 
 async function getArtistGenre(artistAPIUrl) {
-  let accessToken = localStorage.getItem('access_token');
+  let accessToken = localStorage.getItem("access_token");
 
   return fetch(artistAPIUrl, {
     headers: {
-      Authorization: 'Bearer ' + accessToken,
+      Authorization: "Bearer " + accessToken,
     },
   })
     .then((res) => res.json())
     .then((artistInfo) => {
       return artistInfo.genres;
     });
+}
+
+function showAllConcerts(arr) {
+  const concertsContainer = document.getElementById('events-container');
+  const favourites = JSON.parse(localStorage.getItem('favourites')) || {};
+  const bookmarkButtonArr = document.getElementsByClassName('save-btn');
+
+  concertsContainer.innerHTML = '';
+  // Create concert information component from fetched data
+  arr.forEach((concert) => {
+    let bookmarkIconClass = favourites[concert.link]
+      ? 'fa-solid fa-bookmark mx-3'
+      : 'fa-regular fa-bookmark mx-3';
+    concertsContainer.innerHTML += `<div class="flex items-center justify-between gap-x-4 border-b-2 pb-5 pt-5 w-full dark:text-white">
+    <div class="flex-col text-sm">
+      <h4 class="mb-2 font-semibold">${concert.name}</h4>
+      <p>${new Date(concert.date).toDateString()} @ ${concert.time}</p>
+    </div>
+    <div class="flex">
+      <!-- Save to Favourites -->
+      <button id="${concert.link}" class="save-btn" type="button">
+        <i id="${concert.link + 'icon'}" class="${bookmarkIconClass}"></i>
+      </button>
+      <!-- Buy Ticket -->
+      <a class="buy-ticket-link" href="${concert.link}" target="_blank">
+        <button class="buy-ticket-btn" type="button">
+        <i class="fa-solid fa-ticket mx-3"></i>
+        </button>
+      </a>
+    </div>
+  </div>`;
+  });
+
+  document.getElementById('show-all-btn').hidden = true;
+  document.getElementById('show-saved-btn').hidden = false;
+  addButtonListeners(bookmarkButtonArr);
 }
 
 export {
