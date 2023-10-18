@@ -108,9 +108,7 @@ function getMinAndSec(ms) {
   return sec == 60 ? min + 1 + ':00' : min + ':' + (sec < 10 ? '0' : '') + sec;
 }
 
-// Function that calls ticketmaster API to fetch events in the users country. It takes the user's
-// country as an argument and returns an array of events. The function will loop through the fetched
-// data and store the name, date, time, url, and image of the event. Duplicate tours in different cities will be ignored.
+// Function that calls ticketmaster API to fetch events in the users country based off artist genre
 
 async function getEvents(userCountry, genre) {
   const rootURL = 'https://app.ticketmaster.com/discovery/v2/';

@@ -52,9 +52,9 @@ try {
 } catch (ex) {
   alert(ex);
 }
-
+console.log(profile);
 if (localStorage.getItem('access_token')) {
-  document.getElementById('login-button').hidden = true;
+  document.getElementById('login-button').hidden = false;
 } else {
   document.getElementById('media-container').hidden = true;
   document.getElementById('search-container').hidden = true;
@@ -360,7 +360,6 @@ concertToggle.addEventListener('change', () => {
     document.getElementById('player-container').appendChild(eventsContainer);
     showAllConcerts(concerts);
   }
-  // document.getElementById('events-container').classList.toggle('invisible')
 });
 
 export { concerts };
