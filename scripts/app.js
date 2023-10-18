@@ -75,7 +75,7 @@ document.getElementById('profile-name').innerHTML =
 document.getElementById('profile-followers').innerHTML =
   profile.followers.total + ' Followers';
 
-document.getElementById('toggle-favs-btn').addEventListener('click', () => {
+document.getElementById('show-saved-btn').addEventListener('click', () => {
   showSavedConcerts();
 });
 
@@ -330,6 +330,10 @@ async function filterConcertsByGenre(artistUrl) {
   concerts = await getEvents(profile.country, genre);
   showAllConcerts(concerts);
 }
+
+document.getElementById('show-all-btn').addEventListener('click', () => {
+  showAllConcerts(concerts);
+});
 
 const concertToggle = document.getElementById('concertToggle');
 
