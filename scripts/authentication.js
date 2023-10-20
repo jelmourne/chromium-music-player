@@ -27,10 +27,10 @@ async function generateCodeVerify(codeVerify) {
 //----------------------------------------------------
 // Authorization and Access Token for Authentication
 //----------------------------------------------------
-
 function authorization() {
   const clientId = "5b338b4d10ee44f18513726b9af414fb";
-  const redirectUri = "http://127.0.0.1:4173/";
+  const redirectUri =
+    "https://oomnogpbmfimclcmeibgiipaooadaahh.chromiumapp.org/";
   let codeVerify = generateRandomString(128);
 
   generateCodeVerify(codeVerify).then((codeChallenge) => {

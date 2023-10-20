@@ -107,6 +107,31 @@ function getMinAndSec(ms) {
   return sec == 60 ? min + 1 + ":00" : min + ":" + (sec < 10 ? "0" : "") + sec;
 }
 
+// Plays track, playlist, and album
+async function playSong(uri, type) {
+  const accessToken = localStorage.getItem("access_token");
+
+  const data = {
+    offset: {
+      position: 0,
+    },
+  };
+
+  if (type == "track") {
+    Object.assign(data, { uris: [uri] });
+  } else {
+    Object.assign(data, { context_uri: uri });
+  }
+
+  const response = await fetch("https://api.spotify.com/v1/me/player/play", {
+    method: "PUT",
+    body: JSON.stringify(data),
+    headers: new Headers({
+      Authorization: "Bearer " + accessToken,
+    }),
+  });
+}
+
 // Function that calls ticketmaster API to fetch events in the users country based off artist genre
 
 async function getEvents(userCountry, genre) {
@@ -312,6 +337,7 @@ export {
   getSearch,
   getEvents,
   getUserPlaylist,
+  playSong,
   getArtistGenre,
   showSavedConcerts,
   showAllConcerts,
