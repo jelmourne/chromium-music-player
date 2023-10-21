@@ -29,9 +29,9 @@ async function generateCodeVerify(codeVerify) {
 //----------------------------------------------------
 function authorization() {
   const clientId = "5b338b4d10ee44f18513726b9af414fb";
-  const redirectUri =
-    "https://oomnogpbmfimclcmeibgiipaooadaahh.chromiumapp.org/";
+  const redirectUri = chrome.identity.getRedirectURL();
   let codeVerify = generateRandomString(128);
+  var oauthUrl;
 
   generateCodeVerify(codeVerify).then((codeChallenge) => {
     let state = generateRandomString(16);
@@ -50,40 +50,22 @@ function authorization() {
       code_challenge: codeChallenge,
     });
 
-    window.location = "https://accounts.spotify.com/authorize?" + args;
-  });
+    oauthUrl = "https://accounts.spotify.com/authorize?" + args;
 
-  const urlParams = new URLSearchParams(window.location.search);
-  let code = urlParams.get("code");
-  let codeVerifier = localStorage.getItem("code_verifier");
-
-  let body = new URLSearchParams({
-    grant_type: "authorization_code",
-    code: code,
-    redirect_uri: redirectUri,
-    client_id: clientId,
-    code_verifier: codeVerifier,
-  });
-
-  const response = fetch("https://accounts.spotify.com/api/token", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
-    },
-    body: body,
-  })
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error("HTTP status " + response.status);
+    chrome.identity.launchWebAuthFlow(
+      {
+        url: oauthUrl,
+        interactive: true,
+      },
+      (response) => {
+        if (response.includes("callback?error=access_denied")) {
+          console.log("access denied");
+        } else {
+          console.log(response);
+        }
       }
-      return response.json();
-    })
-    .then((data) => {
-      localStorage.setItem("access_token", data.access_token);
-    })
-    .catch((error) => {
-      console.error("Error:", error);
-    });
+    );
+  });
 }
 
 export { authorization };

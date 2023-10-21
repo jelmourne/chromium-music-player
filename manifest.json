@@ -12,12 +12,6 @@
   "action": {
     "default_popup": "index.html"
   },
-  "web_accessible_resources": [
-    {
-      "resources": ["js/*.js"],
-      "matches": ["<all_urls>"]
-    }
-  ],
   "host_permissions": ["<all_urls>"],
   "content_security_policy": {
     "extension_pages": "script-src 'self'; object-src 'self'",
@@ -27,7 +21,12 @@
     "storage",
     "activeTab",
     "tabs",
-    "https://open.spotify.com/*",
-    "contextMenus"
+    "identity",
+    "contextMenus",
+    "http://*/*",
+    "webNavigation",
+    "declarativeContent",
+    "https://accounts.spotify.com*",
+    "https://accounts.spotify.com/authorize*"
   ]
 }
