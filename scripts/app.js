@@ -247,14 +247,13 @@ repeatTrack.addEventListener('click', () => {
 const search = document.getElementById('song-search');
 const searchResults = document.getElementById('search-result');
 
-let resultsArr = [];
 search.addEventListener(
   'input',
   debounce(() => {
     searchResults.innerHTML = '';
     getSearch(search.value).then((response) => {
       searchResults.innerHTML = `<li
-        class="flex w-auto bg-white p-2 hover:bg-green-500 dark:hover:bg-green-500 dark:bg-neutral-900 dark:text-white hover:text-white transition-all cursor-pointer" onclick="playAlbum('${response.albums.items[0].id}', 'album')"
+        class="flex w-auto bg-white p-2 hover:bg-green-500 dark:hover:bg-green-500 dark:bg-neutral-900 dark:text-white hover:text-white transition-all cursor-pointer" onclick="playSong('${response.albums.items[0].uri}', 'album') "
       >
         <div class="flex flex-col">
           <img
@@ -272,9 +271,9 @@ search.addEventListener(
       </li><hr>`;
       response.tracks.items.forEach((element) => {
         searchResults.innerHTML += `<li
-        class="flex w-auto bg-white p-2 hover:bg-green-500 dark:hover:bg-green-500 dark:bg-neutral-900 dark:text-white hover:text-white transition-all cursor-pointer" id="${
+        class="flex w-auto bg-white p-2 hover:bg-green-500 dark:hover:bg-green-500 dark:bg-neutral-900 dark:text-white hover:text-white transition-all cursor-pointer" onclick="playSong('${
           element.uri
-        }"
+        }','track')"
       >
         <div class="flex flex-col">
           <img
@@ -294,21 +293,9 @@ search.addEventListener(
             <p>${element.artists[0].name}</p>
           </div>
         </div>
-      </li>
-      <hr>`;
-        resultsArr.push(element);
-        console.log(resultsArr);
-        // document.getElementById(element.uri).addEventListener('click', () => {
-        //   playSong(element.uri);
-        // });
+      </li><hr>`;
       });
     });
-    resultsArr.forEach((element) => {
-      element.addEventListener('click', () => {
-        playSong(element.uri);
-      });
-    });
-    resultsArr = [];
   }, 300)
 );
 
@@ -318,8 +305,8 @@ const playlistResult = document.getElementById('playlist-dropdown');
 if (parseInt(playlist.total) != 0) {
   playlist.items.forEach((element) => {
     playlistResult.innerHTML += `<li
-          class="flex w-auto bg-white p-1 hover:bg-green-500 dark:hover:bg-green-500 hover:text-white dark:bg-neutral-900 dark:text-white transition-all cursor-pointer" onclick="playAlbum('${
-            element.id
+          class="flex w-auto bg-white p-1 hover:bg-green-500 dark:hover:bg-green-500 hover:text-white dark:bg-neutral-900 dark:text-white transition-all cursor-pointer" onclick="playSong('${
+            element.uri
           }', 'playlists')"
         >
           <div class="flex flex-col">
@@ -370,27 +357,6 @@ concertToggle.addEventListener('change', () => {
     showAllConcerts(concerts);
   }
 });
-
-async function playSong(uri) {
-  const accessToken = localStorage.getItem('access_token');
-
-  if (!Array.isArray(uri)) {
-    uri = [uri];
-  }
-
-  const response = await fetch('https://api.spotify.com/v1/me/player/play', {
-    method: 'PUT',
-    body: JSON.stringify({
-      offset: {
-        position: 0,
-      },
-      uris: uri,
-    }),
-    headers: new Headers({
-      Authorization: 'Bearer ' + accessToken,
-    }),
-  });
-}
 
 // Get playlist tracks
 async function getTracks(playlistId, type) {

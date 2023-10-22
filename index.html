@@ -9,21 +9,22 @@
     />
     <title>Spotify Chrome Extension</title>
     <script type="module" src="./scripts/app.js"></script>
-    <!-- <script
-      src="https://kit.fontawesome.com/e2de3a3f6a.js"
-      crossorigin="anonymous"
-      data-auto-add-css="false"
-    ></script> -->
+    <link
+      rel="stylesheet"
+      href="./node_modules/@fortawesome/fontawesome-free/css/all.css"
+    />
     <link rel="stylesheet" href="./styles/all.css" />
     <link rel="stylesheet" href="./styles/style.css" />
   </head>
 
   <body>
     <!-- Player Container -->
-    <div class="flex justify-center">
+    <div
+      class="border-solid border-gray-300 bg-gray-300 dark:border-neutral-700 dark:bg-neutral-700 border-[5px] w-fit"
+    >
       <div
         id="player-container"
-        class="border border-solid border-gray-300 bg-white dark:bg-neutral-900 p-30 rounded-lg shadow-lg p-5"
+        class="dark:bg-neutral-900 bg-white rounded-lg p-5"
       >
         <div class="flex flex-row justify-between">
           <!-- Nav Bar -->
@@ -33,14 +34,14 @@
             >
               <i class="fa-solid fa-magnifying-glass pe-2 dark:text-white"></i>
               <input
-                class="outline-none w-24 dark:bg-transparent dark:text-white"
+                class="outline-none w-24 dark:bg-transparent dark:text-white placeholder-gray-200"
                 placeholder="Search"
                 id="song-search"
               />
             </div>
             <div id="search-result" class="absolute z-50"></div>
           </div>
-          <div class="mx-5">
+          <div class="mx-5 flex">
             <button id="darkToggle">
               <i class="fa-solid fa-moon mx-3 dark:text-white"></i>
             </button>
@@ -194,5 +195,34 @@
         </div>
       </div>
     </div>
+    <script>
+      // Plays track, playlist, and album
+      async function playSong(uri, type) {
+        const accessToken = localStorage.getItem('access_token');
+
+        const data = {
+          offset: {
+            position: 0,
+          },
+        };
+
+        if (type == 'track') {
+          Object.assign(data, { uris: [uri] });
+        } else {
+          Object.assign(data, { context_uri: uri });
+        }
+
+        const response = await fetch(
+          'https://api.spotify.com/v1/me/player/play',
+          {
+            method: 'PUT',
+            body: JSON.stringify(data),
+            headers: new Headers({
+              Authorization: 'Bearer ' + accessToken,
+            }),
+          }
+        );
+      }
+    </script>
   </body>
 </html>

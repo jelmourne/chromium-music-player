@@ -67,7 +67,6 @@ async function setShuffle(value) {
   let args = new URLSearchParams({
     state: value,
   });
-  console.log(value);
 
   const response = await fetch(
     `https://api.spotify.com/v1/me/player/shuffle?${args}`,
@@ -150,7 +149,7 @@ async function getEvents(userCountry, genre) {
     });
     return filteredEvents;
   } catch (ex) {
-    console.log(ex);
+    console.error(ex);
   }
 }
 
@@ -227,12 +226,13 @@ function showAllConcerts(arr) {
   const bookmarkButtonArr = document.getElementsByClassName('save-btn');
 
   concertsContainer.innerHTML = '';
-  // Create concert information component from fetched data
-  arr.forEach((concert) => {
-    let bookmarkIconClass = favourites[concert.link]
-      ? 'fa-solid fa-bookmark mx-3'
-      : 'fa-regular fa-bookmark mx-3';
-    concertsContainer.innerHTML += `<div class="flex items-center justify-between gap-x-4 border-b-2 pb-5 pt-5 w-full dark:text-white">
+  try {
+    // Create concert information component from fetched data
+    arr.forEach((concert) => {
+      let bookmarkIconClass = favourites[concert.link]
+        ? 'fa-solid fa-bookmark mx-3'
+        : 'fa-regular fa-bookmark mx-3';
+      concertsContainer.innerHTML += `<div class="flex items-center justify-between gap-x-4 border-b-2 pb-5 pt-5 w-full dark:text-white">
     <div class="flex-col text-sm">
       <h4 class="mb-2 font-semibold">${concert.name}</h4>
       <p>${new Date(concert.date).toDateString()} @ ${concert.time}</p>
@@ -250,7 +250,10 @@ function showAllConcerts(arr) {
       </a>
     </div>
   </div>`;
-  });
+    });
+  } catch (ex) {
+    console.error(ex);
+  }
 
   document.getElementById('show-all-btn').hidden = true;
   document.getElementById('show-saved-btn').hidden = false;
