@@ -247,6 +247,7 @@ repeatTrack.addEventListener('click', () => {
 const search = document.getElementById('song-search');
 const searchResults = document.getElementById('search-result');
 
+let resultsArr = [];
 search.addEventListener(
   'input',
   debounce(() => {
@@ -271,9 +272,9 @@ search.addEventListener(
       </li><hr>`;
       response.tracks.items.forEach((element) => {
         searchResults.innerHTML += `<li
-        class="flex w-auto bg-white p-2 hover:bg-green-500 dark:hover:bg-green-500 dark:bg-neutral-900 dark:text-white hover:text-white transition-all cursor-pointer" onclick="playSong('${
+        class="flex w-auto bg-white p-2 hover:bg-green-500 dark:hover:bg-green-500 dark:bg-neutral-900 dark:text-white hover:text-white transition-all cursor-pointer" id="${
           element.uri
-        }')"
+        }"
       >
         <div class="flex flex-col">
           <img
@@ -293,9 +294,21 @@ search.addEventListener(
             <p>${element.artists[0].name}</p>
           </div>
         </div>
-      </li><hr>`;
+      </li>
+      <hr>`;
+        resultsArr.push(element);
+        console.log(resultsArr);
+        // document.getElementById(element.uri).addEventListener('click', () => {
+        //   playSong(element.uri);
+        // });
       });
     });
+    resultsArr.forEach((element) => {
+      element.addEventListener('click', () => {
+        playSong(element.uri);
+      });
+    });
+    resultsArr = [];
   }, 300)
 );
 
@@ -357,5 +370,61 @@ concertToggle.addEventListener('change', () => {
     showAllConcerts(concerts);
   }
 });
+
+async function playSong(uri) {
+  const accessToken = localStorage.getItem('access_token');
+
+  if (!Array.isArray(uri)) {
+    uri = [uri];
+  }
+
+  const response = await fetch('https://api.spotify.com/v1/me/player/play', {
+    method: 'PUT',
+    body: JSON.stringify({
+      offset: {
+        position: 0,
+      },
+      uris: uri,
+    }),
+    headers: new Headers({
+      Authorization: 'Bearer ' + accessToken,
+    }),
+  });
+}
+
+// Get playlist tracks
+async function getTracks(playlistId, type) {
+  const accessToken = localStorage.getItem('access_token');
+
+  const response = await fetch(
+    `https://api.spotify.com/v1/${
+      type == 'album' ? 'albums' : 'playlists'
+    }/${playlistId}/tracks`,
+    {
+      headers: {
+        Authorization: 'Bearer ' + accessToken,
+      },
+    }
+  );
+
+  return await response.json();
+}
+
+async function playAlbum(playlistId, type) {
+  let uri = [];
+  const accessToken = localStorage.getItem('access_token');
+
+  const tracks = await getTracks(playlistId, type);
+
+  tracks.items.forEach((element) => {
+    if (type == 'playlists') {
+      uri.push(element.track.uri);
+    } else {
+      uri.push(element.uri);
+    }
+  });
+
+  await playSong(uri);
+}
 
 export { concerts };
