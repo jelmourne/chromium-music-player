@@ -29,7 +29,7 @@ async function generateCodeVerify(codeVerify) {
 //----------------------------------------------------
 function authorization() {
   const clientId = "5b338b4d10ee44f18513726b9af414fb";
-  const redirectUri = chrome.identity.getRedirectURL();
+  const redirectUri = window.location.origin;
   let codeVerify = generateRandomString(128);
   var oauthUrl;
 
