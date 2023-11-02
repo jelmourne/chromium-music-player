@@ -8,6 +8,7 @@ Spotify extension built for chrome browsers, allows users to access their Spotif
 
 ![Static Badge](https://img.shields.io/badge/JavaScript%20-%20javascript?logoColor=%23000000&label=Language&color=%23f7df1e)
 ![Static Badge](https://img.shields.io/badge/Tailwind%20-%20tailwind?logoColor=%23000000&label=Styling&color=%2306b6d4)
+![Static Badge](https://img.shields.io/badge/Markdown%20-%20md?label=Documentation&color=8A2BE2&link=https%3A%2F%2Fgithub.com%2Fjelmourne%2Fchromium-music-player%2Fblob%2Fmain%2FDOCUMENTATION.md)
 ![Static Badge](https://img.shields.io/badge/Welcome%20-%20contribution?label=Contributions)
 </div>
 
