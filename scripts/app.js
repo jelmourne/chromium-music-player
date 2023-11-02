@@ -86,9 +86,11 @@ document.getElementById("logout-button").addEventListener("click", () => {
   location.reload();
 });
 
+document.getElementById("playlist-toggle").addEventListener("click", () => {});
+
 // Spotify player
 var tag = document.createElement("script");
-tag.src = "https://sdk.scdn.co/spotify-player.js";
+tag.src = "./scripts/spotify-player.js";
 document.getElementsByTagName("body")[0].appendChild(tag);
 
 const playButton = document.getElementById("togglePlay");
