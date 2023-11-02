@@ -19,7 +19,7 @@ Spotify extension built for chrome browsers, allows users to access their Spotif
 <h4 align="center">
   Below is code documentation, describes the process of our application.
 
-  | [Authorization](https://github.com/jelmourne/chromium-music-player/blob/main/DOCUMENTATION.md#authorization) | [Api Methods](#api-methods) | [Helper Methods](#helper-methods) | [DOM Manipulation](#dom-manipulation) | [Spotify Player](#spotify-player)
+  | [Authorization](https://github.com/jelmourne/chromium-music-player/blob/main/DOCUMENTATION.md#authorization) | [Api Methods](https://github.com/jelmourne/chromium-music-player/blob/main/DOCUMENTATION.md#api-methods) | [Helper Methods](https://github.com/jelmourne/chromium-music-player/blob/main/DOCUMENTATION.md#helper-methods) | [DOM Manipulation](https://github.com/jelmourne/chromium-music-player/blob/main/DOCUMENTATION.md#dom-manipulation) | [Spotify Player](https://github.com/jelmourne/chromium-music-player/blob/main/DOCUMENTATION.md#spotify-player)
 </h4>
 
 
