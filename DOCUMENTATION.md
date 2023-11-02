@@ -5,6 +5,7 @@
   
 | [Authorization](#authorization) | [Api Methods](#api-methods) | [Helper Methods](#helper-methods) | [DOM Manipulation](#dom-manipulation) | [Spotify Player](#spotify-player)
 </h4>
+
 ---
 
 <!-- Body -->
