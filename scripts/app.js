@@ -356,4 +356,39 @@ concertToggle.addEventListener("change", () => {
   }
 });
 
+// Get playlist tracks
+async function getTracks(playlistId, type) {
+  const accessToken = localStorage.getItem('access_token');
+
+  const response = await fetch(
+    `https://api.spotify.com/v1/${
+      type == 'album' ? 'albums' : 'playlists'
+    }/${playlistId}/tracks`,
+    {
+      headers: {
+        Authorization: 'Bearer ' + accessToken,
+      },
+    }
+  );
+
+  return await response.json();
+}
+
+async function playAlbum(playlistId, type) {
+  let uri = [];
+  const accessToken = localStorage.getItem('access_token');
+
+  const tracks = await getTracks(playlistId, type);
+
+  tracks.items.forEach((element) => {
+    if (type == 'playlists') {
+      uri.push(element.track.uri);
+    } else {
+      uri.push(element.uri);
+    }
+  });
+
+  await playSong(uri);
+}
+
 export { concerts };

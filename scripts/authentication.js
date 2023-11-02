@@ -1,8 +1,8 @@
 // Random string generator that will be used to pass into the state parm for extra security
 function generateRandomString(length) {
-  let text = "";
+  let text = '';
   let possible =
-    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
   for (let i = 0; i < length; i++) {
     text += possible.charAt(Math.floor(Math.random() * possible.length));
@@ -13,13 +13,13 @@ function generateRandomString(length) {
 async function generateCodeVerify(codeVerify) {
   function base64Encode(string) {
     return btoa(String.fromCharCode.apply(null, new Uint8Array(string)))
-      .replace(/\+/g, "-")
-      .replace(/\//g, "_")
-      .replace(/=+$/, "");
+      .replace(/\+/g, '-')
+      .replace(/\//g, '_')
+      .replace(/=+$/, '');
   }
   const encode = new TextEncoder();
   const data = encode.encode(codeVerify);
-  const digest = await window.crypto.subtle.digest("SHA-256", data);
+  const digest = await window.crypto.subtle.digest('SHA-256', data);
 
   return base64Encode(digest);
 }
@@ -35,53 +35,53 @@ function authorization() {
   generateCodeVerify(codeVerify).then((codeChallenge) => {
     let state = generateRandomString(16);
     let scope =
-      "streaming app-remote-control user-modify-playback-state user-read-currently-playing playlist-read-private user-read-email user-read-private user-read-playback-state";
+      'streaming app-remote-control user-modify-playback-state user-read-currently-playing playlist-read-private user-read-email user-read-private user-read-playback-state';
 
-    localStorage.setItem("code_verifier", codeVerify);
+    localStorage.setItem('code_verifier', codeVerify);
 
     let args = new URLSearchParams({
-      response_type: "code",
+      response_type: 'code',
       client_id: clientId,
       scope: scope,
       redirect_uri: redirectUri,
       state: state,
-      code_challenge_method: "S256",
+      code_challenge_method: 'S256',
       code_challenge: codeChallenge,
     });
 
-    window.location = "https://accounts.spotify.com/authorize?" + args;
+    window.location = 'https://accounts.spotify.com/authorize?' + args;
   });
 
   const urlParams = new URLSearchParams(window.location.search);
-  let code = urlParams.get("code");
-  let codeVerifier = localStorage.getItem("code_verifier");
+  let code = urlParams.get('code');
+  let codeVerifier = localStorage.getItem('code_verifier');
 
   let body = new URLSearchParams({
-    grant_type: "authorization_code",
+    grant_type: 'authorization_code',
     code: code,
     redirect_uri: redirectUri,
     client_id: clientId,
     code_verifier: codeVerifier,
   });
 
-  const response = fetch("https://accounts.spotify.com/api/token", {
-    method: "POST",
+  const response = fetch('https://accounts.spotify.com/api/token', {
+    method: 'POST',
     headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
+      'Content-Type': 'application/x-www-form-urlencoded',
     },
     body: body,
   })
     .then((response) => {
       if (!response.ok) {
-        throw new Error("HTTP status " + response.status);
+        throw new Error('HTTP status ' + response.status);
       }
       return response.json();
     })
     .then((data) => {
-      localStorage.setItem("access_token", data.access_token);
+      localStorage.setItem('access_token', data.access_token);
     })
     .catch((error) => {
-      console.error("Error:", error);
+      console.error('Error:', error);
     });
 }
 
