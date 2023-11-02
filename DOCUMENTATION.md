@@ -2,6 +2,7 @@
 
 <h4 align="center">
   Below is code documentation, describes the process of our application.
+  
 | [Authorization](#authorization) | [Api Methods](#api-methods) | [Helper Methods](#helper-methods) | [DOM Manipulation](#dom-manipulation) | [Spotify Player](#spotify-player)
 </h4>
 ---
