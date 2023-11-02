@@ -1,0 +1,32 @@
+{
+  "manifest_version": 3,
+  "name": "Spotify Chrome",
+  "version": "1.0.1",
+
+  "description": "Chrome extention that can play your spotify tracks",
+  "author": [
+    "jelmourne@outlook.com",
+    "Tristan.dasilva98@gmail.com",
+    "alexandergrigoratos@gmail.com"
+  ],
+  "action": {
+    "default_popup": "index.html"
+  },
+  "host_permissions": ["<all_urls>"],
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'",
+    "sandbox": "sandbox allow-scripts; script-src 'self'; object-src 'self'"
+  },
+  "permissions": [
+    "storage",
+    "activeTab",
+    "tabs",
+    "identity",
+    "contextMenus",
+    "http://*/*",
+    "webNavigation",
+    "declarativeContent",
+    "https://accounts.spotify.com*",
+    "https://accounts.spotify.com/authorize*"
+  ]
+}
